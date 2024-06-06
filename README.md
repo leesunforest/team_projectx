@@ -32,7 +32,6 @@
      - BoardEntity
      - BoardFileEntity, BoardFileRepository 추가
      - detail.html
-   - github에 올려놓은 코드를 보시고 어떤 부분이 바뀌는지 잘 살펴봐주세요. 
 
     - board_table(부모) - board_file_table(자식)
 ```
@@ -73,7 +72,7 @@ constraint FKcfxqly70ddd02xbou0jxgh4o3
 
 ## mysql DataBase 계정 생성 및 권한 부여 
 ```
-create database db_codingrecipe;
-create user user_codingrecipe@localhost identified by '1234';
-grant all privileges on db_codingrecipe.* to user_codingrecipe@localhost;
+create database team;
+create user user_team@localhost identified by '1234';
+grant all privileges on team.* to user_codingrecipe@localhost;
 ```
