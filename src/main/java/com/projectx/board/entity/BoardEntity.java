@@ -42,7 +42,9 @@ public class BoardEntity extends BaseEntity {
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CommentEntity> commentEntityList = new ArrayList<>();
 
-    public static BoardEntity toSaveEntity(BoardDTO boardDTO) {
+    // save.html의 값을 boardDTO로 담음.
+    // DTO에 있는 객체를 Entity로 옮겨닮는 작업.
+    public static BoardEntity toSaveEntity(BoardDTO boardDTO) { // static 형식의 메서드로 정의
         BoardEntity boardEntity = new BoardEntity();
         boardEntity.setBoardWriter(boardDTO.getBoardWriter());
         boardEntity.setBoardPass(boardDTO.getBoardPass());
