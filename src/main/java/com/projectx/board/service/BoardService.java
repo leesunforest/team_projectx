@@ -23,6 +23,7 @@ import java.util.Optional;
 
 // DTO -> Entity (Entity Class)
 // Entity -> DTO (DTO Class)
+// 변환하는 과정이 많이 발생.
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +70,7 @@ public class BoardService {
         List<BoardDTO> boardDTOList = new ArrayList<>();
         for (BoardEntity boardEntity: boardEntityList) {
             boardDTOList.add(BoardDTO.toBoardDTO(boardEntity));
-        }
+        } // entity객체를 DTO로 변환을 하고 list에 담는 작업
         return boardDTOList;
     }
 
