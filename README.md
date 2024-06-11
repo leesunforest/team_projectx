@@ -74,5 +74,5 @@ constraint FKcfxqly70ddd02xbou0jxgh4o3
 ```
 create database team;
 create user user_team@localhost identified by '1234';
-grant all privileges on team.* to user_codingrecipe@localhost;
+grant all privileges on team.* to team@localhost;
 ```
