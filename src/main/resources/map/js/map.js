@@ -64,6 +64,9 @@ function openAddressSearchModal(input) {
     const modal = document.getElementById('address-search-modal');
     modal.dataset.inputId = input.id;
     modal.style.display = 'flex';
+    // 초기화 코드 추가
+    document.getElementById('address-search-input').value = '';
+    document.getElementById('address-search-results').innerHTML = '';
 }
 
 function closeAddressSearchModal() {
@@ -125,16 +128,17 @@ function findMidpoint() {
     for (let i = 0; i < groupInputs.length; i++) {
         const input = groupInputs[i];
         const query = input.value;
+        const fullAddress = input.dataset.fullAddress || query;
         promises.push(
             new Promise((resolve, reject) => {
                 const geocoder = new kakao.maps.services.Geocoder();
-                geocoder.addressSearch(query, (result, status) => {
+                geocoder.addressSearch(fullAddress, (result, status) => {
                     if (status === kakao.maps.services.Status.OK && result.length > 0) {
                         const latlng = new kakao.maps.LatLng(result[0].y, result[0].x);
                         locations.push({ latlng, name: `user${i + 1}` });
                         resolve();
                     } else {
-                        reject(`주소를 찾을 수 없습니다: ${query}`);
+                        reject(`주소를 찾을 수 없습니다: ${fullAddress}`);
                     }
                 });
             })
@@ -230,11 +234,10 @@ function searchAddrFromKeyword(input, index) {
                 div.innerHTML = `<strong>${item.place_name}</strong><br><small id="keyword-address-${index}-${item.id}">Loading address...</small>`;
                 div.className = 'autocomplete-item';
                 div.onclick = () => {
-                    const originalValue = input.value;
-                    input.value = item.place_name;
+                    input.value = item.place_name;  // Show keyword
                     input.dataset.fullAddress = '';  // Placeholder for full address
                     keywordList.innerHTML = '';
-                    getAddressFromCoords(new kakao.maps.LatLng(item.y, item.x), input, originalValue);
+                    getFullAddress(item, `keyword-address-${index}-${item.id}`, input);
                 };
                 keywordList.appendChild(div);
 
@@ -248,19 +251,29 @@ function searchAddrFromKeyword(input, index) {
 }
 
 
-
-function getAddressFromCoords(coords, input, originalValue) {
+function getFullAddress(item, elementId, originalInput = null) {
     const geocoder = new kakao.maps.services.Geocoder();
+    const coords = new kakao.maps.LatLng(item.y, item.x);
     geocoder.coord2Address(coords.getLng(), coords.getLat(), (result, status) => {
-        if (status === kakao.maps.services.Status.OK) {
+        if (status === kakao.maps.services.Status.OK && result.length > 0) {
             const address = result[0].address.address_name;
-            if (input) {
-                input.dataset.fullAddress = address;
-                input.value = originalValue;
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = address;
+            }
+            if (originalInput) {
+                originalInput.dataset.fullAddress = address;  // Store the full address
+                // Keep the original keyword in the input field
+            }
+        } else {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = '주소를 찾을 수 없습니다.';
             }
         }
     });
 }
+
 
 
 function performAddressSearch(keyword, keywordList, input) {
@@ -273,7 +286,8 @@ function performAddressSearch(keyword, keywordList, input) {
                 div.innerHTML = `<strong>${item.address_name}</strong><br><small>${item.address_name}</small>`;
                 div.className = 'autocomplete-item';
                 div.onclick = () => {
-                    input.value = item.address_name;
+                    input.value = item.address_name;  // Show keyword
+                    input.dataset.fullAddress = item.address_name;  // Store the full address
                     keywordList.innerHTML = '';
                 };
                 keywordList.appendChild(div);
@@ -288,57 +302,6 @@ function performAddressSearch(keyword, keywordList, input) {
     });
 }
 
-
-function searchAddress(input) {
-    const keywordList = document.getElementById('address-search-results');
-    keywordList.innerHTML = '';
-
-    const ps = new kakao.maps.services.Places();
-    const keyword = input.value;
-
-    if (!keyword.trim()) {
-        return;
-    }
-
-    ps.keywordSearch(keyword, (data, status) => {
-        if (status === kakao.maps.services.Status.OK && data.length > 0) {
-            keywordList.innerHTML = '';
-            data.forEach(item => {
-                const div = document.createElement('div');
-                div.innerHTML = `<strong>${item.place_name}</strong><br><small id="address-${item.id}">Loading address...</small>`;
-                div.className = 'autocomplete-item';
-                div.onclick = () => {
-                    const originalInput = document.getElementById(document.getElementById('address-search-modal').dataset.inputId);
-                    originalInput.value = item.place_name;
-                    originalInput.dataset.fullAddress = '';  // Placeholder for full address
-                    keywordList.innerHTML = '';
-                    closeAddressSearchModal();
-                    getFullAddress(item, `address-${item.id}`, originalInput);
-                };
-                keywordList.appendChild(div);
-
-                // Fetch and display full address
-                getFullAddress(item, `address-${item.id}`);
-            });
-        }
-    }, { bounds: map.getBounds() });
-}
-
-function getFullAddress(item, elementId, originalInput = null) {
-    const geocoder = new kakao.maps.services.Geocoder();
-    const coords = new kakao.maps.LatLng(item.y, item.x);
-    geocoder.coord2Address(coords.getLng(), coords.getLat(), (result, status) => {
-        if (status === kakao.maps.services.Status.OK && result.length > 0) {
-            const address = result[0].address.address_name;
-            document.getElementById(elementId).textContent = address;
-            if (originalInput) {
-                originalInput.dataset.fullAddress = address;
-            }
-        } else {
-            document.getElementById(elementId).textContent = '주소를 찾을 수 없습니다.';
-        }
-    });
-}
 
 function searchCategory(category) {
     const ps = new kakao.maps.services.Places();
@@ -411,3 +374,41 @@ function calculateGreatCircleMidpoint(locations) {
 
     return new kakao.maps.LatLng(toDegrees(Lat), toDegrees(Lon));
 }
+
+function searchAddress(input) {
+    const keywordList = document.getElementById('address-search-results');
+    keywordList.innerHTML = '';
+
+    const ps = new kakao.maps.services.Places();
+    const keyword = input.value;
+
+    if (!keyword.trim()) {
+        return;
+    }
+
+    ps.keywordSearch(keyword, (data, status) => {
+        if (status === kakao.maps.services.Status.OK && data.length > 0) {
+            keywordList.innerHTML = '';
+            data.forEach(item => {
+                const div = document.createElement('div');
+                div.innerHTML = `<strong>${item.place_name}</strong><br><small id="address-${item.id}">Loading address...</small>`;
+                div.className = 'autocomplete-item';
+                div.onclick = () => {
+                    const modal = document.getElementById('address-search-modal');  // Modal 참조 추가
+                    const originalInput = document.getElementById(modal.dataset.inputId);
+                    originalInput.value = item.place_name;  // Show keyword
+                    originalInput.dataset.fullAddress = '';  // Placeholder for full address
+                    keywordList.innerHTML = '';
+                    closeAddressSearchModal();
+                    getFullAddress(item, `address-${item.id}`, originalInput);
+                };
+                keywordList.appendChild(div);
+
+                // Fetch and display full address
+                getFullAddress(item, `address-${item.id}`);
+            });
+        }
+    }, { bounds: map.getBounds() });
+}
+
+
