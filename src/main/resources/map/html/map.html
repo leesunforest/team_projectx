@@ -19,7 +19,7 @@
     <h1>Map Service Implementation</h1>
 </header>
 <main>
-    <div id="map" style="width:100%;height:500px;position:relative;">
+    <div id="map" style="width:75%;height:500px;position:relative;float:right;">
         <div id="top-left-buttons" style="position:absolute;top:10px;left:10px;z-index:10;">
             <button id="myPageButton" onclick="location.href='mypage.html'">마이페이지</button>
             <button id="groupButton">그룹 참여</button>
@@ -27,7 +27,15 @@
             <button class="category" data-category="CE7">카페</button>
         </div>
     </div>
+    <div id="left-panel" class="panel" style="display: none;">
+        <div class="panel-header">
+            <h2>추천 장소 목록</h2>
+        </div>
+        <hr>
+        <ul id="place-list"></ul>
+    </div>
 </main>
+
 
 <div id="group-modal" class="modal">
     <div class="modal-content">
@@ -54,7 +62,5 @@
         <div id="address-search-results" class="keyword-list"></div>
     </div>
 </div>
-
-
 </body>
 </html>

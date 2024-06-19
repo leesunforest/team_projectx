@@ -15,15 +15,13 @@ header {
 main {
     height: calc(100% - 80px);
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 }
 
 #map {
-    width: 100%;
-    height: 80vh;
+    width: 75%;
+    height: 500px;
     position: relative;
+    float: right;
 }
 
 .top-bar {
@@ -189,4 +187,50 @@ main {
 #address-search-results {
     max-height: 200px;
     overflow-y: auto;
+}
+
+#left-panel {
+    width: 25%;
+    height: 500px;
+    overflow-y: auto;
+    background: white;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    float: left;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#place-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#place-list li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#pagination {
+    margin: 10px auto;
+    text-align: center;
+}
+
+#pagination a {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+#pagination .on {
+    font-weight: bold;
+    cursor: default;
+    color: #777;
 }

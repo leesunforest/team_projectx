@@ -5,22 +5,35 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.close').addEventListener('click', closeGroupModal);
     document.querySelector('.close-address-modal').addEventListener('click', closeAddressSearchModal);
     document.getElementById('addGroup').addEventListener('click', addGroupInput);
-    document.getElementById('findMidpoint').addEventListener('click', findMidpoint);
+    document.getElementById('findMidpoint').addEventListener('click', () => {
+        closeGroupModal(); // 그룹 생성 창 내리기
+        findMidpoint();
+    });
 
     document.querySelectorAll('.category').forEach(button => {
-        button.addEventListener('click', () => searchCategory(button.dataset.category));
+        button.addEventListener('click', () => filterPlaces(button.dataset.category));
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeAddressSearchModal();
+        }
     });
 });
+
 
 let map;
 let markers = [];
 let locations = [];
 let userLocation = null;
+let infowindow;
 
 const midpointMarkerIcon = 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png'; // 중간지점 마커 이미지 URL
 const starMarkerIcon = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png'; // 추천 장소 마커 이미지 URL
 
 function initializeMap() {
+    infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
             const lat = position.coords.latitude;
@@ -193,7 +206,9 @@ function addMarker(position, title, isMidpoint = false, isRecommendedPlace = fal
     }
 
     markers.push(marker);
+    return marker; // Return the marker to add click event later
 }
+
 
 function clearMarkers() {
     markers.forEach(marker => marker.setMap(null));
@@ -203,15 +218,46 @@ function clearMarkers() {
 function recommendPlaces(midpoint) {
     const ps = new kakao.maps.services.Places();
     const keywords = ['식당', '카페'];
+    const placeList = document.getElementById('place-list');
+    placeList.innerHTML = ''; // Clear the list before adding new places
+    document.getElementById('left-panel').style.display = 'block'; // Show the place list panel
+
     keywords.forEach(keyword => {
         ps.keywordSearch(keyword, (data, status) => {
             if (status === kakao.maps.services.Status.OK) {
                 data.forEach(place => {
                     const latlng = new kakao.maps.LatLng(place.y, place.x);
-                    addMarker(latlng, place.place_name, false, true);
+                    const marker = addMarker(latlng, place.place_name, false, true);
+
+                    // Add place to the list
+                    const li = document.createElement('li');
+                    li.textContent = place.place_name;
+                    li.dataset.category = keyword;
+                    placeList.appendChild(li);
+
+                    // Add click event to the marker
+                    kakao.maps.event.addListener(marker, 'click', () => {
+                        alert(`Place: ${place.place_name}\nAddress: ${place.road_address_name || place.address_name}`);
+                    });
                 });
             }
         }, { location: midpoint, radius: 500 });
+    });
+}
+
+document.querySelectorAll('.category').forEach(button => {
+    button.addEventListener('click', () => filterPlaces(button.dataset.category));
+});
+
+function filterPlaces(category) {
+    const placeList = document.getElementById('place-list');
+    const items = placeList.getElementsByTagName('li');
+    Array.from(items).forEach(item => {
+        if (item.dataset.category === category) {
+            item.style.display = 'list-item';
+        } else {
+            item.style.display = 'none';
+        }
     });
 }
 
@@ -273,7 +319,6 @@ function getFullAddress(item, elementId, originalInput = null) {
         }
     });
 }
-
 
 
 function performAddressSearch(keyword, keywordList, input) {
@@ -410,5 +455,3 @@ function searchAddress(input) {
         }
     }, { bounds: map.getBounds() });
 }
-
-
