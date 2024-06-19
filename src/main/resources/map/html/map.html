@@ -9,7 +9,7 @@
     <script>
         document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_MAPS_API_KEY + '&libraries=services"><\/script>');
     </script>
-    <script defer src="../js/map.js"></script>
+    <script type="module" defer src="../js/map_main.js"></script>
 </head>
 <body>
 <header>
@@ -19,23 +19,24 @@
     <h1>Map Service Implementation</h1>
 </header>
 <main>
-    <div id="map" style="width:75%;height:500px;position:relative;float:right;">
-        <div id="top-left-buttons" style="position:absolute;top:10px;left:10px;z-index:10;">
+    <div id="map">
+        <div id="top-left-buttons">
             <button id="myPageButton" onclick="location.href='mypage.html'">마이페이지</button>
             <button id="groupButton">그룹 참여</button>
             <button class="category" data-category="FD6">음식점</button>
             <button class="category" data-category="CE7">카페</button>
         </div>
     </div>
-    <div id="left-panel" class="panel" style="display: none;">
+    <div id="left-panel" class="panel">
         <div class="panel-header">
             <h2>추천 장소 목록</h2>
         </div>
         <hr>
         <ul id="place-list"></ul>
+        <div id="place-info"></div>
+        <div id="pagination"></div>
     </div>
 </main>
-
 
 <div id="group-modal" class="modal">
     <div class="modal-content">
@@ -44,9 +45,9 @@
         <div id="groupInputs">
             <div class="group-input">
                 <label for="group1">유저 1:</label>
-                <input type="text" id="group1" class="group" placeholder="주소 또는 키워드 입력" name="group1" readonly onclick="openAddressSearchModal(this)">
+                <input type="text" id="group1" class="group" placeholder="주소 또는 키워드 입력" name="group1" readonly>
                 <div id="keywordList1" class="keyword-list"></div>
-                <button class="remove-button" onclick="removeGroupInput(this)">X</button>
+                <button class="remove-button">X</button>
             </div>
         </div>
         <button id="addGroup">+</button>
@@ -58,7 +59,7 @@
     <div class="modal-content">
         <span class="close-address-modal">&times;</span>
         <h2>주소 검색</h2>
-        <input type="text" id="address-search-input" placeholder="주소 또는 키워드 입력" onkeyup="searchAddress(this)">
+        <input type="text" id="address-search-input" placeholder="주소 또는 키워드 입력">
         <div id="address-search-results" class="keyword-list"></div>
     </div>
 </div>
