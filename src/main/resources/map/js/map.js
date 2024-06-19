@@ -32,9 +32,9 @@ function initializeMap() {
             };
             map = new kakao.maps.Map(mapContainer, mapOption);
 
-            searchAddrFromCoords(map.getCenter(), displayCenterInfo);
+            // 제거된 부분: searchAddrFromCoords(map.getCenter(), displayCenterInfo);
             kakao.maps.event.addListener(map, 'idle', () => {
-                searchAddrFromCoords(map.getCenter(), displayCenterInfo);
+                // 제거된 부분: searchAddrFromCoords(map.getCenter(), displayCenterInfo);
             });
 
         }, () => {
@@ -55,6 +55,7 @@ function initializeMap() {
     }
 }
 
+
 function openGroupModal() {
     document.getElementById('group-modal').style.display = 'flex';
 }
@@ -72,10 +73,11 @@ function addGroupInput() {
         <label for="group${index}">유저 ${index}:</label>
         <input type="text" id="group${index}" class="group" placeholder="주소 또는 키워드 입력" name="group${index}" onkeyup="searchAddrFromKeyword(this, ${index})">
         <div id="keywordList${index}" class="keyword-list"></div>
-        <button class="remove-button" onclick="removeGroupInput(this)">삭제</button>
+        <button class="remove-button" onclick="removeGroupInput(this)">X</button>
     `;
     groupInputs.appendChild(newInput);
 }
+
 
 function removeGroupInput(button) {
     const groupInput = button.parentElement;
@@ -247,7 +249,7 @@ function performAddressSearch(keyword, keywordList, input) {
         } else {
             keywordList.innerHTML = '';
             const div = document.createElement('div');
-            div.innerText = '주소를 찾을 수 없습니다';
+           // div.innerText = '주소를 찾을 수 없습니다';
             div.className = 'autocomplete-item';
             keywordList.appendChild(div);
         }
@@ -291,18 +293,6 @@ function searchAddrFromCoords(coords, callback) {
 function searchDetailAddrFromCoords(coords, callback) {
     const geocoder = new kakao.maps.services.Geocoder();
     geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
-}
-
-function displayCenterInfo(result, status) {
-    if (status === kakao.maps.services.Status.OK) {
-        const infoDiv = document.getElementById('addressResult');
-        for (let i = 0; i < result.length; i++) {
-            if (result[i].region_type === 'H') {
-                infoDiv.innerHTML = result[i].address_name;
-                break;
-            }
-        }
-    }
 }
 
 function toRadians(degrees) {
