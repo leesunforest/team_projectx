@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### map api key ###
+apikey.js

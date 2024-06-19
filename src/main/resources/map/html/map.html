@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지도 메인 페이지</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/apikey.js"></script>
+    <script>
+        document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_MAPS_API_KEY + '&libraries=services"><\/script>');
+    </script>
+    <script defer src="../js/map.js"></script>
+</head>
+<body>
+<header>
+    <div class="top-bar">
+        <button onclick="location.href='main.html'">Home</button>
+    </div>
+    <h1>Map Service Implementation</h1>
+</header>
+<main>
+    <div id="map" style="width:100%;height:500px;position:relative;">
+        <div id="top-left-buttons" style="position:absolute;top:10px;left:10px;z-index:10;">
+            <button id="myPageButton" onclick="location.href='mypage.html'">마이페이지</button>
+            <button id="groupButton">그룹 참여</button>
+            <button class="category" data-category="FD6">음식점</button>
+            <button class="category" data-category="CE7">카페</button>
+        </div>
+    </div>
+</main>
+
+<div id="group-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>그룹 생성</h2>
+        <div id="groupInputs">
+            <div class="group-input">
+                <label for="group1">유저 1:</label>
+                <input type="text" id="group1" class="group" placeholder="주소 또는 키워드 입력" name="group1" onkeyup="searchAddrFromKeyword(this, 1)">
+                <div id="keywordList1" class="keyword-list"></div>
+                <button class="remove-button" onclick="removeGroupInput(this)">삭제</button>
+            </div>
+        </div>
+        <button id="findMidpoint">중간지점 찾기</button>
+        <button id="addGroup">추가 유저 입력</button>
+    </div>
+</div>
+
+<div id="addressResult" style="position: absolute; top: 10px; right: 10px; z-index: 10; background: white; padding: 10px; border-radius: 5px;"></div>
+
+</body>
+</html>
