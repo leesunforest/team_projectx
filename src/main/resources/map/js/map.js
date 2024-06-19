@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('groupButton').addEventListener('click', openGroupModal);
     document.querySelector('.close').addEventListener('click', closeGroupModal);
+    document.querySelector('.close-address-modal').addEventListener('click', closeAddressSearchModal);
     document.getElementById('addGroup').addEventListener('click', addGroupInput);
     document.getElementById('findMidpoint').addEventListener('click', findMidpoint);
 
@@ -32,11 +33,7 @@ function initializeMap() {
             };
             map = new kakao.maps.Map(mapContainer, mapOption);
 
-            // 제거된 부분: searchAddrFromCoords(map.getCenter(), displayCenterInfo);
-            kakao.maps.event.addListener(map, 'idle', () => {
-                // 제거된 부분: searchAddrFromCoords(map.getCenter(), displayCenterInfo);
-            });
-
+            kakao.maps.event.addListener(map, 'idle', () => {});
         }, () => {
             const mapContainer = document.getElementById('map');
             const mapOption = {
@@ -55,7 +52,6 @@ function initializeMap() {
     }
 }
 
-
 function openGroupModal() {
     document.getElementById('group-modal').style.display = 'flex';
 }
@@ -64,24 +60,56 @@ function closeGroupModal() {
     document.getElementById('group-modal').style.display = 'none';
 }
 
+function openAddressSearchModal(input) {
+    const modal = document.getElementById('address-search-modal');
+    modal.dataset.inputId = input.id;
+    modal.style.display = 'flex';
+}
+
+function closeAddressSearchModal() {
+    document.getElementById('address-search-modal').style.display = 'none';
+}
+
 function addGroupInput() {
     const groupInputs = document.getElementById('groupInputs');
     const index = groupInputs.getElementsByClassName('group-input').length + 1;
     const newInput = document.createElement('div');
     newInput.className = 'group-input';
     newInput.innerHTML = `
-        <label for="group${index}">유저 ${index}:</label>
-        <input type="text" id="group${index}" class="group" placeholder="주소 또는 키워드 입력" name="group${index}" onkeyup="searchAddrFromKeyword(this, ${index})">
-        <div id="keywordList${index}" class="keyword-list"></div>
-        <button class="remove-button" onclick="removeGroupInput(this)">X</button>
-    `;
+            <label for="group${index}">유저 ${index}:</label>
+            <input type="text" id="group${index}" class="group" placeholder="주소 또는 키워드 입력" name="group${index}" readonly onclick="openAddressSearchModal(this)">
+            <div id="keywordList${index}" class="keyword-list"></div>
+            <button class="remove-button" onclick="removeGroupInput(this)">X</button>
+        `;
     groupInputs.appendChild(newInput);
+    ensureMinimumOneUser();
 }
-
 
 function removeGroupInput(button) {
     const groupInput = button.parentElement;
     groupInput.remove();
+    renumberUsers();
+    ensureMinimumOneUser();
+}
+
+function renumberUsers() {
+    const groupInputs = document.getElementById('groupInputs').getElementsByClassName('group-input');
+    Array.from(groupInputs).forEach((input, index) => {
+        const label = input.querySelector('label');
+        const inputField = input.querySelector('input');
+        label.setAttribute('for', `group${index + 1}`);
+        label.textContent = `유저 ${index + 1}:`;
+        inputField.id = `group${index + 1}`;
+        inputField.name = `group${index + 1}`;
+        inputField.setAttribute('onclick', `openAddressSearchModal(this)`);
+    });
+}
+
+function ensureMinimumOneUser() {
+    const groupInputs = document.getElementById('groupInputs').getElementsByClassName('group-input');
+    if (groupInputs.length === 0) {
+        addGroupInput();
+    }
 }
 
 function findMidpoint() {
@@ -92,7 +120,7 @@ function findMidpoint() {
     }
 
     const promises = [];
-    locations = []; // 이전의 위치들을 초기화합니다.
+    locations = [];
 
     for (let i = 0; i < groupInputs.length; i++) {
         const input = groupInputs[i];
@@ -103,7 +131,7 @@ function findMidpoint() {
                 geocoder.addressSearch(query, (result, status) => {
                     if (status === kakao.maps.services.Status.OK && result.length > 0) {
                         const latlng = new kakao.maps.LatLng(result[0].y, result[0].x);
-                        locations.push({ latlng, name: `user${i + 1}` }); // 유저 이름 저장
+                        locations.push({ latlng, name: `user${i + 1}` });
                         resolve();
                     } else {
                         reject(`주소를 찾을 수 없습니다: ${query}`);
@@ -119,7 +147,7 @@ function findMidpoint() {
                 const midpoint = calculateGreatCircleMidpoint(locations);
 
                 clearMarkers();
-                locations.forEach(location => addMarker(location.latlng, location.name, false, false, true)); // 유저 마커 추가
+                locations.forEach(location => addMarker(location.latlng, location.name, false, false, true));
                 addMarker(midpoint, '중간지점', true);
 
                 map.setCenter(midpoint);
@@ -150,10 +178,9 @@ function addMarker(position, title, isMidpoint = false, isRecommendedPlace = fal
         map: map,
         position: position,
         title: title,
-        image: markerImage // 기본 마커일 때는 null이 전달되어 기본 마커가 사용됩니다.
+        image: markerImage
     });
 
-    // 유저 마커일 때만 텍스트가 출력되도록 인포윈도우를 추가
     if (isUser) {
         const infowindow = new kakao.maps.InfoWindow({
             content: `<div style="padding:5px;white-space:nowrap;">${title}</div>`
@@ -195,21 +222,24 @@ function searchAddrFromKeyword(input, index) {
         return;
     }
 
-    // Perform keyword and address search based on current map bounds
     ps.keywordSearch(keyword, (data, status) => {
         if (status === kakao.maps.services.Status.OK && data.length > 0) {
             keywordList.innerHTML = '';
             data.forEach(item => {
                 const div = document.createElement('div');
-                div.innerText = item.place_name;
+                div.innerHTML = `<strong>${item.place_name}</strong><br><small id="keyword-address-${index}-${item.id}">Loading address...</small>`;
                 div.className = 'autocomplete-item';
                 div.onclick = () => {
                     const originalValue = input.value;
                     input.value = item.place_name;
+                    input.dataset.fullAddress = '';  // Placeholder for full address
                     keywordList.innerHTML = '';
                     getAddressFromCoords(new kakao.maps.LatLng(item.y, item.x), input, originalValue);
                 };
                 keywordList.appendChild(div);
+
+                // Fetch and display full address
+                getFullAddress(item, `keyword-address-${index}-${item.id}`);
             });
         } else {
             performAddressSearch(keyword, keywordList, input);
@@ -217,14 +247,16 @@ function searchAddrFromKeyword(input, index) {
     }, { bounds: map.getBounds() });
 }
 
+
+
 function getAddressFromCoords(coords, input, originalValue) {
     const geocoder = new kakao.maps.services.Geocoder();
     geocoder.coord2Address(coords.getLng(), coords.getLat(), (result, status) => {
         if (status === kakao.maps.services.Status.OK) {
             const address = result[0].address.address_name;
             if (input) {
-                input.dataset.address = address;  // Store the address in a data attribute
-                input.value = originalValue;  // Restore the original input value
+                input.dataset.fullAddress = address;
+                input.value = originalValue;
             }
         }
     });
@@ -238,7 +270,7 @@ function performAddressSearch(keyword, keywordList, input) {
             keywordList.innerHTML = '';
             result.forEach(item => {
                 const div = document.createElement('div');
-                div.innerText = item.address_name;
+                div.innerHTML = `<strong>${item.address_name}</strong><br><small>${item.address_name}</small>`;
                 div.className = 'autocomplete-item';
                 div.onclick = () => {
                     input.value = item.address_name;
@@ -249,9 +281,61 @@ function performAddressSearch(keyword, keywordList, input) {
         } else {
             keywordList.innerHTML = '';
             const div = document.createElement('div');
-           // div.innerText = '주소를 찾을 수 없습니다';
             div.className = 'autocomplete-item';
+            div.textContent = 'No results found';
             keywordList.appendChild(div);
+        }
+    });
+}
+
+
+function searchAddress(input) {
+    const keywordList = document.getElementById('address-search-results');
+    keywordList.innerHTML = '';
+
+    const ps = new kakao.maps.services.Places();
+    const keyword = input.value;
+
+    if (!keyword.trim()) {
+        return;
+    }
+
+    ps.keywordSearch(keyword, (data, status) => {
+        if (status === kakao.maps.services.Status.OK && data.length > 0) {
+            keywordList.innerHTML = '';
+            data.forEach(item => {
+                const div = document.createElement('div');
+                div.innerHTML = `<strong>${item.place_name}</strong><br><small id="address-${item.id}">Loading address...</small>`;
+                div.className = 'autocomplete-item';
+                div.onclick = () => {
+                    const originalInput = document.getElementById(document.getElementById('address-search-modal').dataset.inputId);
+                    originalInput.value = item.place_name;
+                    originalInput.dataset.fullAddress = '';  // Placeholder for full address
+                    keywordList.innerHTML = '';
+                    closeAddressSearchModal();
+                    getFullAddress(item, `address-${item.id}`, originalInput);
+                };
+                keywordList.appendChild(div);
+
+                // Fetch and display full address
+                getFullAddress(item, `address-${item.id}`);
+            });
+        }
+    }, { bounds: map.getBounds() });
+}
+
+function getFullAddress(item, elementId, originalInput = null) {
+    const geocoder = new kakao.maps.services.Geocoder();
+    const coords = new kakao.maps.LatLng(item.y, item.x);
+    geocoder.coord2Address(coords.getLng(), coords.getLat(), (result, status) => {
+        if (status === kakao.maps.services.Status.OK && result.length > 0) {
+            const address = result[0].address.address_name;
+            document.getElementById(elementId).textContent = address;
+            if (originalInput) {
+                originalInput.dataset.fullAddress = address;
+            }
+        } else {
+            document.getElementById(elementId).textContent = '주소를 찾을 수 없습니다.';
         }
     });
 }
@@ -261,13 +345,12 @@ function searchCategory(category) {
 
     clearMarkers();
 
-    // Perform category search based on current map bounds
     ps.categorySearch(category, (data, status, pagination) => {
         if (status === kakao.maps.services.Status.OK) {
             data.forEach(place => {
                 const coords = new kakao.maps.LatLng(place.y, place.x);
                 addMarker(coords, place.place_name);
-                getAddressFromCoords(coords, null); // null to not affect any input field
+                getAddressFromCoords(coords, null);
             });
         }
     }, { bounds: map.getBounds() });
