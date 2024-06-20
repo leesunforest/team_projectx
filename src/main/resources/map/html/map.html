@@ -9,16 +9,24 @@
     <script>
         document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_MAPS_API_KEY + '&libraries=services"><\/script>');
     </script>
-    <script type="module" defer src="../js/map_main.js"></script>
+    <script defer src="../js/map-utils.js"></script>
+    <script defer src="../js/init.js"></script>
+    <script defer src="../js/map.js"></script>
+    <script defer src="../js/modal.js"></script>
+    <script defer src="../js/group.js"></script>
+    <script defer src="../js/midpoint.js"></script>
+    <script defer src="../js/recommend.js"></script>
+    <script defer src="../js/filter.js"></script>
+    <script defer src="../js/search.js"></script>
+    <script defer src="../js/category.js"></script>
 </head>
 <body>
 <header>
     <div class="top-bar">
         <button onclick="location.href='main.html'">Home</button>
     </div>
-    <h1>Map Service Implementation</h1>
 </header>
-<main>
+<main class="fullscreen">
     <div id="map">
         <div id="top-left-buttons">
             <button id="myPageButton" onclick="location.href='mypage.html'">마이페이지</button>
@@ -27,14 +35,12 @@
             <button class="category" data-category="CE7">카페</button>
         </div>
     </div>
-    <div id="left-panel" class="panel">
+    <div id="left-panel" class="panel" style="display: none;">
         <div class="panel-header">
             <h2>추천 장소 목록</h2>
         </div>
         <hr>
         <ul id="place-list"></ul>
-        <div id="place-info"></div>
-        <div id="pagination"></div>
     </div>
 </main>
 
@@ -45,13 +51,13 @@
         <div id="groupInputs">
             <div class="group-input">
                 <label for="group1">유저 1:</label>
-                <input type="text" id="group1" class="group" placeholder="주소 또는 키워드 입력" name="group1" readonly>
+                <input type="text" id="group1" class="group" placeholder="주소 또는 키워드 입력" name="group1" readonly onclick="openAddressSearchModal(this)">
                 <div id="keywordList1" class="keyword-list"></div>
-                <button class="remove-button">X</button>
+                <button class="remove-button" onclick="removeGroupInput(this)">X</button>
             </div>
         </div>
         <button id="addGroup">+</button>
-        <button id="findMidpoint">중간지점 찾기</button>
+        <button id="findMidpoint" onclick="showRecommendationList()">중간지점 찾기</button>
     </div>
 </div>
 
@@ -59,9 +65,17 @@
     <div class="modal-content">
         <span class="close-address-modal">&times;</span>
         <h2>주소 검색</h2>
-        <input type="text" id="address-search-input" placeholder="주소 또는 키워드 입력">
+        <input type="text" id="address-search-input" placeholder="주소 또는 키워드 입력" onkeyup="searchAddress(this)">
         <div id="address-search-results" class="keyword-list"></div>
     </div>
 </div>
+
+<script>
+    function showRecommendationList() {
+        document.getElementById('left-panel').style.display = 'block';
+        document.getElementById('map').style.width = '75%';
+    }
+</script>
+
 </body>
 </html>

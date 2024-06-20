@@ -12,20 +12,29 @@ header {
     text-align: center;
 }
 
+main.fullscreen {
+    height: calc(100% - 80px);
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
 main {
     height: calc(100% - 80px);
     display: flex;
+    flex-direction: row;
+    width: 100%;
 }
 
 #map {
-    width: 75%;
-    height: calc(100vh - 80px);
-    position: relative;
+    flex-grow: 1;
+    height: 100%;
+    width: 100%; /* 기본적으로 전체 화면을 차지하도록 설정 */
 }
 
 #left-panel {
     width: 25%;
-    height: calc(100vh - 80px);
+    height: 100%;
     overflow-y: auto;
     background: white;
     padding: 10px;
@@ -243,4 +252,21 @@ main {
 #address-search-results {
     max-height: 200px;
     overflow-y: auto;
+}
+
+.place-item {
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.place-item .place-name {
+    font-weight: bold;
+}
+
+.place-item .place-info {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 5px;
 }

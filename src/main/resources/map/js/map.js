@@ -1,38 +1,28 @@
-// map.js
-export let map;
-export let infowindow;
-export let userLocation = null;
+let map, infowindow, userLocation = null;
+let markers = [], locations = [], placeMarkers = [];
+let currentCategory = null;
 
-export function initializeMap() {
+const midpointMarkerIcon = 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png';
+const starMarkerIcon = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png';
+
+function initializeMap(callback) {
     infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+    const mapContainer = document.getElementById('map');
+    const defaultCenter = new kakao.maps.LatLng(37.5665, 126.9780);
+    const mapOption = { center: defaultCenter, level: 3 };
 
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            userLocation = new kakao.maps.LatLng(lat, lng); // 사용자 위치 저장
-            const mapContainer = document.getElementById('map');
-            const mapOption = {
-                center: userLocation,
-                level: 3
-            };
+            userLocation = new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            mapOption.center = userLocation;
             map = new kakao.maps.Map(mapContainer, mapOption);
-
-            kakao.maps.event.addListener(map, 'idle', () => {});
+            if (typeof callback === 'function') callback();
         }, () => {
-            const mapContainer = document.getElementById('map');
-            const mapOption = {
-                center: new kakao.maps.LatLng(37.5665, 126.9780),
-                level: 3
-            };
             map = new kakao.maps.Map(mapContainer, mapOption);
+            if (typeof callback === 'function') callback();
         });
     } else {
-        const mapContainer = document.getElementById('map');
-        const mapOption = {
-            center: new kakao.maps.LatLng(37.5665, 126.9780),
-            level: 3
-        };
         map = new kakao.maps.Map(mapContainer, mapOption);
+        if (typeof callback === 'function') callback();
     }
 }
