@@ -1,79 +1,42 @@
-# 개발환경
-1. IDE: IntelliJ IDEA Ulitimate
-2. Spring Boot 3.3.0
-3. JDK 17
-4. mysql
-5. Spring Data JPA
-6. Thymeleaf
+# 안내사항
+0. applicatin.yml 을 수정했습니다. 
+   - 실행시 DB의 테이블이 생성되지 않는 문제가 있어 yml 변경한 상태
+1. 좋아요 기능 관계를 N 관계로 설정(양방향)한 상태
+   - 사용자가 다양한 가게를 저장할 수 있음(1:N -> oneToMany)
+   - 가게는 다양한 사용자가 저장할 수 있음(N:1 -> manyToOne)
+2. 회원 정보를 받아오기 위해 임의로 User 테이블을 생성한 상태
+   - User Table 코드
+   ```
+      CREATE TABLE `user` (
+         `id` bigint NOT NULL AUTO_INCREMENT,
+         `email` varchar(255) DEFAULT NULL,
+         `name` varchar(255) DEFAULT NULL,
+         `password` varchar(255) DEFAULT NULL,
+         PRIMARY KEY (`id`)
+    )
+   ```
+3. 가게 부분 API를 받아 구현해야하는데, 테스트를 못해 해결방안 찾아봐야함(현재는 URL이 올바르지 않아서 실행이 안되는 문제)
+4. 회원 부분을 테스트 코드로 생성이 되었지만, 회원이 아닌 상태에서 할 수 있도록 변경을 하려고 함 **(변경 전)**
 
-# 게시판 주요기능 
-1. 글쓰기(/board/save)
-2. 글목록(/board/)
-3. 글조회(/board/{id})
-4. 글수정(/board/update/{id})
-    - 상세화면에서 수정 버튼 클릭 
-    - 서버에서 해당 게시글의 정보를 가지고 수정 화면 출력 
-    - 제목, 내용 수정 입력 받아서 서버로 요청 
-    - 수정 처리 
-5. 글삭제(/board/delete/{id})
-6. 페이징처리(/board/paging)
-    - /board/paging?page=2
-    - /board/paging/2
-    - 게시글 14
-      - 한페이지에 5개씩 => 3개
-      - 한페이지에 3개씩 => 5개
-7. 파일(이미지)첨부하기 
-   - 단일 파일 첨부
-   - 다중 파일 첨부
-   - 파일 첨부와 관련하여 추가될 부분들  
-     - save.html  
-     - BoardDTO  
-     - BoardService.save()  
-     - BoardEntity
-     - BoardFileEntity, BoardFileRepository 추가
-     - detail.html
-   - github에 올려놓은 코드를 보시고 어떤 부분이 바뀌는지 잘 살펴봐주세요. 
+# 좋아요 주요기능
+- favoriteController @requestMapping("/favorites")
+1. 가게 저장(/favorites/save)
+2. 가게 목록 조회(/favorites/list)
+   - 가게 목록에서 원하는 가게를 누르면 가게 상세 정보가 보이도록 하기
+3. 좋아요한 가게 상세보기 (/favorite/store/{storeId})
+   - 가게 목록을 누르면 네이버 등의 사이트에 등록된 가게 정보로 바로 넘어가게 할 것인가에 대해 논의하기
+4. 가게 삭제(/favorites/delete/{id})
 
-    - board_table(부모) - board_file_table(자식)
+## 좋아요 Table
 ```
-create table board_table
-(
-id             bigint auto_increment primary key,
-created_time   datetime     null,
-updated_time   datetime     null,
-board_contents varchar(500) null,
-board_hits     int          null,
-board_pass     varchar(255) null,
-board_title    varchar(255) null,
-board_writer   varchar(20)  not null,
-file_attached  int          null
-);
-
-create table board_file_table
-(
-id                 bigint auto_increment primary key,
-created_time       datetime     null,
-updated_time       datetime     null,
-original_file_name varchar(255) null,
-stored_file_name   varchar(255) null,
-board_id           bigint       null,
-constraint FKcfxqly70ddd02xbou0jxgh4o3
-    foreign key (board_id) references board_table (id) on delete cascade
-);
-```
-
-
-
-
-
-
-
-
-
-
-## mysql DataBase 계정 생성 및 권한 부여 
-```
-create database db_codingrecipe;
-create user user_codingrecipe@localhost identified by '1234';
-grant all privileges on db_codingrecipe.* to user_codingrecipe@localhost;
+   CREATE TABLE `favorite` (  
+      `favorite_id` bigint NOT NULL AUTO_INCREMENT,
+      `created_at` datetime(6) DEFAULT NULL,
+      `store_id` varchar(255) DEFAULT NULL,
+      `store_name` varchar(255) DEFAULT NULL,
+      `user_id` bigint NOT NULL,
+      PRIMARY KEY (`favorite_id`),
+      KEY `FKh3f2dg11ibnht4fvnmx60jcif` (`user_id`),
+      CONSTRAINT `FKh3f2dg11ibnht4fvnmx60jcif` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+   )
 ```
