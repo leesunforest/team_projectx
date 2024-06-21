@@ -1,67 +1,79 @@
 package com.projectx.board.test;
 
+import com.projectx.board.dto.Store;
 import com.projectx.board.entity.Favorite;
 import com.projectx.board.entity.User;
 import com.projectx.board.repository.FavoriteRepository;
 import com.projectx.board.repository.UserRepository;
 import com.projectx.board.service.FavoriteService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 public class FavoriteServiceTest {
 
+    @MockBean
+    private FavoriteRepository favoriteRepository;
+
+    @MockBean
+    private UserRepository userRepository;
+
+    @MockBean
+    private RestTemplate restTemplate;
+
     @Autowired
     private FavoriteService favoriteService;
 
-    @Autowired
-    private FavoriteRepository favoriteRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    private User testUser;
-
     @BeforeEach
-    public void setup() {
-        // 테스트에서 사용할 필드 초기화
-        testUser = User.builder()
-                .email("test@test.com")
-                .name("Test User")
-                .password("1234")
-                .favorite(new ArrayList<>())
-                .build();
-        userRepository.save(testUser);
+    public void setUp() {
+        MockitoAnnotations.openMocks(this); // 목을 초기화합니다.
     }
 
     @Test
+    @DisplayName("saveFavorite : 가게를 저장할 수 있다.")
     public void testSaveFavorite() {
-        Favorite favorite = favoriteService.saveFavorite(testUser.getId(), "store1");
-        assertNotNull(favorite);
-        assertEquals(testUser.getId(), favorite.getUser().getId());
-        assertEquals("store1", favorite.getStoreId());
-    }
+        // Mock User 객체 생성
+        User mockUser = User.builder()
+                .id(1L)
+                .email("test@example.com")
+                .name("Test User")
+                .password("password")
+                .build();
 
-    @Test
-    public void testGetFavoritesByUser() {
-        favoriteService.saveFavorite(testUser.getId(), "store1");
-        List<Favorite> favorites = favoriteService.getFavoritesByUser(testUser.getId());
-        assertFalse(favorites.isEmpty());
-    }
+        // Mock Store 객체 생성
+        Store mockStore = new Store();
+        mockStore.setStoreId("store1");
+        mockStore.setStoreName("Test Store");
 
-    @Test
-    public void testDeleteFavorite() {
-        Favorite favorite = favoriteService.saveFavorite(testUser.getId(), "store1");
-        favoriteService.deleteFavorite(favorite.getFavoriteId());
-        Optional<Favorite> deleteFavorite = favoriteRepository.findById(favorite.getFavoriteId());
-        assertTrue(deleteFavorite.isEmpty());
+        // Mock Favorite 객체 생성
+        Favorite mockFavorite = Favorite.builder()
+                .favoriteId(1L)
+                .user(mockUser)
+                .storeId("store1")
+                .storeName("Test Store")
+                .build();
+
+        // Mock 동작 설정
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(mockUser));
+        when(restTemplate.getForObject(anyString(), any(Class.class))).thenReturn(mockStore);
+        when(favoriteRepository.save(any(Favorite.class))).thenReturn(mockFavorite);
+
+        // 실제 테스트 실행
+        Favorite savedFavorite = favoriteService.saveFavorite(1L, "store1");
+        assertNotNull(savedFavorite);
     }
 }

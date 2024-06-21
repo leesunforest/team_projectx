@@ -25,8 +25,17 @@
       private String storeAddress; // 가게 주소
    }
    ```
-3. 가게 부분 API를 받아 구현해야하는데, 테스트를 못해 해결방안 찾아봐야함(현재는 URL이 올바르지 않아서 실행이 안되는 문제)
-4. 회원 부분을 테스트 코드로 생성이 되었지만, 회원이 아닌 상태에서 할 수 있도록 변경을 하려고 함 **(변경 전)**
+3. 외부 API를 가져오기 전 테스트 진행을 위해 config 패키지에 임의로 AppConfig 클래스를 생성하였습니다. 
+   ```
+   @Configuration
+   public class AppConfig {
+      // 임의로 외부에서 값을 받아올 RestTemplate 값을 주입 받기 위한 Bean 등록
+      @Bean
+      public RestTemplate restTemplate() {
+         return new RestTemplate();
+   }
+   ```
+4. 저장 부분 테스트 성공한 상태
 
 # 좋아요 주요기능
 - favoriteController @requestMapping("/favorites")
