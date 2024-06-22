@@ -13,19 +13,18 @@ import jakarta.persistence.*;
 public class CommentEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_id")
     private Long id;
 
     @Column(length = 20, nullable = false)
     private String commentWriter;
 
-    @Column
+    @Column(name = "com_contents")
     private String commentContents;
 
-    /* Board:Comment = 1:N */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private BoardEntity boardEntity;
-
 
     public static CommentEntity toSaveEntity(CommentDTO commentDTO, BoardEntity boardEntity) {
         CommentEntity commentEntity = new CommentEntity();
