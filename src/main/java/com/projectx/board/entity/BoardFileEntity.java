@@ -15,10 +15,10 @@ public class BoardFileEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "original_file_name")
+    @Column(name = "original_file_name", length = 50)
     private String originalFileName;
 
-    @Column(name = "stored_file_name")
+    @Column(name = "stored_file_name", length = 50)
     private String storedFileName;
 
     @ManyToOne(fetch = FetchType.LAZY)

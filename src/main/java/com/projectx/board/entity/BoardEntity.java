@@ -44,7 +44,7 @@ public class BoardEntity extends BaseEntity {
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CommentEntity> commentEntityList = new ArrayList<>();
 
-    @Column
+    @Column(length = 20)
     private String city;
 
     // save.html의 값을 boardDTO로 담음.

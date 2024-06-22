@@ -19,7 +19,7 @@ public class CommentEntity extends BaseEntity {
     @Column(length = 20, nullable = false)
     private String commentWriter;
 
-    @Column(name = "com_contents")
+    @Column(name = "com_contents", length = 500)
     private String commentContents;
 
     @ManyToOne(fetch = FetchType.LAZY)
