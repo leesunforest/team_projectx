@@ -2,10 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeMap(() => {
         setupEventListeners();
         document.querySelector('main').classList.add('fullscreen');
-
-        searchCategory('FD6');
-        searchCategory('CE7');
-        searchAndDisplayPlaces();  // 중간지점 찾기 전에도 장소 검색 실행
     });
 
     document.getElementById('address-search-button').addEventListener('click', () => {
@@ -19,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
 
 function setupEventListeners() {
     document.getElementById('groupButton').addEventListener('click', openGroupModal);

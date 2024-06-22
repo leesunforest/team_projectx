@@ -42,3 +42,27 @@ function searchCategory(category) {
         }
     }, { location: map.getCenter(), radius: 500 });
 }
+
+function addCategoryButtons() {
+    const topLeftButtons = document.getElementById('top-left-buttons');
+    if (!document.querySelector('.category[data-category="FD6"]')) {
+        const foodButton = document.createElement('button');
+        foodButton.className = 'category';
+        foodButton.dataset.category = 'FD6';
+        foodButton.textContent = '음식점';
+        foodButton.onclick = () => {
+            toggleFilterPlaces(foodButton);
+        };
+
+        const cafeButton = document.createElement('button');
+        cafeButton.className = 'category';
+        cafeButton.dataset.category = 'CE7';
+        cafeButton.textContent = '카페';
+        cafeButton.onclick = () => {
+            toggleFilterPlaces(cafeButton);
+        };
+
+        topLeftButtons.appendChild(foodButton);
+        topLeftButtons.appendChild(cafeButton);
+    }
+}

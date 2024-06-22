@@ -31,11 +31,16 @@ function findMidpoint() {
                 addMarker(midpoint, '중간지점', true);
                 map.setCenter(midpoint);
                 recommendPlaces(midpoint);
+
+                // 음식점과 카페 버튼 추가
+                addCategoryButtons();
+
                 document.querySelector('main').classList.remove('fullscreen');
             }
         })
         .catch(alert);
 }
+
 
 function addMarker(position, title, isMidpoint = false, isRecommendedPlace = false, isUser = false) {
     let markerImage = null;
@@ -60,4 +65,9 @@ function clearMarkers() {
     markers = [];
     placeMarkers.forEach(marker => marker.setMap(null));
     placeMarkers = [];
+    const placeList = document.getElementById('place-list');
+    if (placeList) {
+        placeList.innerHTML = '';
+    }
 }
+
