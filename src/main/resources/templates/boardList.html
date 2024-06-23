@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>boardList</title>
+    <script src="https://kit.fontawesome.com/a38ef865ef.js" crossorigin="anonymous"></script>
+    <style>
+        div.container{
+          margin: 0 auto;
+          width: 960px;
+        }
+
+        .board-list{
+            margin-top: 20px;
+        }
+
+        .board-item{
+            width: 90%;
+            margin: 10px auto;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>'중간에서 만나' 게시판</h1>
+        <input class="search-txt" id="searchKeyword" type="text" placeholder="검색어를 입력하세요.">
+        <button onclick="searchReq()">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <hr>
+        <div class="board-list" th:each="board: ${boardList}">
+            <div class="board-item">
+                <a th:href="@{/board/${board.id}}" th:text="${board.boardTitle}"></a>
+            </div>
+        </div>
+    </div>
+</body>
+<script th:inline="javascript">
+
+    const searchReq = () => {
+        console.log("검색 요청");
+        const keyword = document.getElementById("searchKeyword").value;
+        $.ajax({
+            type: "GET",
+            url: "/board/search?keyword=${keyword}",
+            success: function (res) {
+                console.log("요청 성공", res);
+                const boardList = document.getElementById('boardList');
+                boardList.innerHTML = '';
+                res.forEach(board => {
+                    const boardItem = document.createElement('div');
+                    boardItem.className = 'board-item';
+                    boardItem.innerHTML = `<a href="/board/${board.id}">${board.boardTitle}</a>`;
+                    boardList.appendChild(boardItem);
+                });
+            },
+            error: function (err) {
+                console.log("요청 실패", err);
+            }
+        });
+    }
+</script>
+</html>

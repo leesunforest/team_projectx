@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>detail</title>
+  <title>boardDetail</title>
   <!-- jquery cdn -->
   <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
   <style>
@@ -26,6 +26,7 @@
 </head>
 <body>
   <div class="container">
+    <!-- 게시글 상단 -->
     <div class="boardHeader">
       <h1 th:text="${board.boardTitle}"></h1>
       <p th:text="${'작성자: ' + board.boardWriter + ' | 조회수: '+board.boardHits + ' | 위치: ' + board.city + ' | 작성시간: ' + board.boardCreatedTime}"></p>
