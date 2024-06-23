@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>save</title>
+  <style>
+        div.container{
+          margin: 0 auto;
+          width: 800px;
+        }
+
+        div.container input[type="text"],
+        div.container input[type="file"],
+        div.container textarea {
+          width: calc(100% - 24px); /* container 너비에서 패딩값을 뺀 크기로 설정 */
+          margin-bottom: 10px; /* 입력 필드 간 간격 설정 */
+          padding: 10px; /* 내부 여백 추가 */
+          border: none;
+          border-radius: 4px;
+          box-sizing: border-box; /* 패딩, 테두리 포함한 전체 크기 설정 */
+          background-color: #EEEEEE;
+        }
+
+        div.container textarea {
+          height: 150px; /* textarea 높이 설정 */
+          resize: vertical; /* 수직 리사이즈만 허용 */
+        }
+
+        div.container .buttons {
+          margin-top: 10px; /* 버튼 위 간격 설정 */
+          text-align: center; /* 내부 요소를 가운데 정렬 */
+        }
+
+        div.container .buttons input[type="submit"],
+        div.container .buttons input[type="button"] {
+          width: 100px;
+          height: 40px;
+          padding: 10px 20px; /* 버튼 내부 여백 설정 */
+          background-color: #999999; /* 배경색 설정 */
+          color: white; /* 텍스트 색상 설정 */
+          border: none; /* 테두리 제거 */
+          cursor: pointer; /* 마우스 커서 포인터로 변경 */
+          border-radius: 4px; /* 모서리 둥글게 설정 */
+          margin: 0 25px; /* 버튼 사이 간격 설정 */
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <form action="/board/save" method="post" enctype="multipart/form-data">
+
+      <h3>제목</h3>
+      <input type="text" name="boardTitle"> <br>
+      <br>
+      <h3>사진 첨부하기</h3>
+      <input type="file" name="boardFile"> <br>
+      <br>
+      <h3>내용</h3>
+      <textarea name="boardContents" cols="30" rows="10"></textarea> <br>
+      <br>
+      <div class="buttons">
+        <input type="button" value="취소" onclick="cancelReq()">
+        <input type="submit" value="글작성">
+      </div>
+    </form>
+  </div>
+  <script>
+    const cancelReq = () => {
+      history.back();
+    }
+  </script>
+</body>
+</html>
