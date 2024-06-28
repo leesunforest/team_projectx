@@ -25,21 +25,36 @@ function findMidpoint() {
     Promise.all(promises)
         .then(() => {
             if (locations.length > 1) {
-                const midpoint = calculateGreatCircleMidpoint(locations);
-                clearMarkers();
-                locations.forEach(location => addMarker(location.latlng, location.name, false, false, true));
-                addMarker(midpoint, '중간지점', true);
-                map.setCenter(midpoint);
-                recommendPlaces(midpoint);
+                let isValid = true;
+                for (let i = 0; i < locations.length; i++) {
+                    for (let j = i + 1; j < locations.length; j++) {
+                        const distance = calculateDistance(locations[i].latlng, locations[j].latlng);
+                        if (distance > 33) {
+                            isValid = false;
+                            alert(`유저 간의 거리가 멀어요!`);
+                            break;
+                        }
+                    }
+                    if (!isValid) break;
+                }
+                if (isValid) {
+                    const midpoint = calculateGreatCircleMidpoint(locations);
+                    clearMarkers();
+                    locations.forEach(location => addMarker(location.latlng, location.name, false, false, true));
+                    addMarker(midpoint, '중간지점', true);
+                    map.setCenter(midpoint);
+                    recommendPlaces(midpoint);
 
-                // 음식점과 카페 버튼 추가
-                addCategoryButtons();
+                    // 음식점과 카페 버튼 추가
+                    addCategoryButtons();
 
-                document.querySelector('main').classList.remove('fullscreen');
+                    document.querySelector('main').classList.remove('fullscreen');
+                }
             }
         })
         .catch(alert);
 }
+
 
 
 function addMarker(position, title, isMidpoint = false, isRecommendedPlace = false, isUser = false) {

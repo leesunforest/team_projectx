@@ -18,16 +18,16 @@ function recommendPlaces(midpoint) {
                     const li = document.createElement('li');
                     li.className = 'place-item';
                     li.innerHTML = `
-    <div class="place-name">
-        ${place.place_name}
-        <button class="save-btn" data-saved="false">Save</button>
-    </div>
-    <div class="place-info" style="display: none;">
-        <p>주소: ${place.road_address_name || place.address_name}</p>
-        <p>전화번호: ${place.phone || '정보 없음'}</p>
-    </div>
-`;
-
+                        <div class="place-name">
+                            ${place.place_name}
+                            <button class="save-btn" data-saved="false">Save</button>
+                        </div>
+                        <div class="place-info" style="display: none;">
+                            <p>주소: ${place.road_address_name || place.address_name}</p>
+                            <p>전화번호: ${place.phone || '정보 없음'}</p>
+                            <p><a href="${place.place_url}" target="_blank">카카오맵에서 보기</a></p>
+                        </div>
+                    `;
 
                     li.dataset.category = keyword;
                     li.dataset.latlng = JSON.stringify(latlng);
@@ -67,6 +67,7 @@ function recommendPlaces(midpoint) {
         }, { location: midpoint, radius: 500 });
     });
 }
+
 
 function fetchPlaceDetails(placeId, listItem) {
     const ps = new kakao.maps.services.Places();

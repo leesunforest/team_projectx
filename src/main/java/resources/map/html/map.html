@@ -73,11 +73,13 @@
     <div class="modal-content">
         <span class="close-address-modal">&times;</span>
         <h2>주소 검색</h2>
-        <input type="text" id="address-search-input" placeholder="주소 또는 키워드 입력" onkeyup="searchAddress(this)">
-        <button id="address-search-button">검색</button>
+        <input type="text" id="address-search-input" placeholder="주소 또는 키워드 입력" onkeydown="handleAddressSearchKeyDown(event)">
+        <button id="address-search-button" onclick="executeAddressSearch()">검색</button>
         <div id="address-search-results" class="keyword-list"></div>
+        <button id="current-location-button" onclick="useCurrentLocation()">현재 위치 사용</button>
     </div>
 </div>
+
 
 <script>
     function findMidpoint() {
