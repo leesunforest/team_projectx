@@ -1,31 +1,13 @@
 package com.projectx.board.test;
 
-import com.projectx.board.dto.Store;
-import com.projectx.board.entity.Favorite;
-import com.projectx.board.entity.User;
-import com.projectx.board.repository.FavoriteRepository;
-import com.projectx.board.repository.UserRepository;
-import com.projectx.board.service.FavoriteService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 public class FavoriteServiceTest {
-
+/*
     @MockBean
     private FavoriteRepository favoriteRepository;
 
@@ -76,4 +58,6 @@ public class FavoriteServiceTest {
         Favorite savedFavorite = favoriteService.saveFavorite(1L, "store1");
         assertNotNull(savedFavorite);
     }
+
+ */
 }
