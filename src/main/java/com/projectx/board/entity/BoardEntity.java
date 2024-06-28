@@ -49,9 +49,10 @@ public class BoardEntity extends BaseEntity {
 
     // save.html의 값을 boardDTO로 담음.
     // DTO에 있는 객체를 Entity로 옮겨닮는 작업.
-    public static BoardEntity toSaveEntity(BoardDTO boardDTO) { // static 형식의 메서드로 정의
+    public static BoardEntity toSaveEntity(BoardDTO boardDTO, User user) { // static 형식의 메서드로 정의
         BoardEntity boardEntity = new BoardEntity();
-        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
+        boardEntity.setBoardWriter(user.getUserId());
+        boardEntity.setUser(user);
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
         boardEntity.setBoardHits(0);
@@ -69,9 +70,10 @@ public class BoardEntity extends BaseEntity {
         return boardEntity;
     }
 
-    public static BoardEntity toSaveFileEntity(BoardDTO boardDTO) {
+    public static BoardEntity toSaveFileEntity(BoardDTO boardDTO, User user) {
         BoardEntity boardEntity = new BoardEntity();
-        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
+        boardEntity.setBoardWriter(user.getUserId());
+        boardEntity.setUser((user));
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
         boardEntity.setBoardHits(0);

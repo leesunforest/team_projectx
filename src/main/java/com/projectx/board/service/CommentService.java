@@ -18,12 +18,13 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
 
-    public Long save(CommentDTO commentDTO) {
+    public Long save(CommentDTO commentDTO, String userId) {
+
         /* 부모엔티티(BoardEntity) 조회 */
         Optional<BoardEntity> optionalBoardEntity = boardRepository.findById(commentDTO.getBoardId());
         if (optionalBoardEntity.isPresent()) {
             BoardEntity boardEntity = optionalBoardEntity.get();
-            CommentEntity commentEntity = CommentEntity.toSaveEntity(commentDTO, boardEntity);
+            CommentEntity commentEntity = CommentEntity.toSaveEntity(commentDTO, boardEntity, userId);
             return commentRepository.save(commentEntity).getId();
         } else {
             return null;

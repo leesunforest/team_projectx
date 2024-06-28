@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -19,9 +20,11 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
     @PostMapping("/save")
-    public ResponseEntity save(@ModelAttribute CommentDTO commentDTO) {
+    public ResponseEntity save(@ModelAttribute CommentDTO commentDTO, Principal principal) {
+        String userId = principal.getName();
+
         System.out.println("commentDTO = " + commentDTO);
-        Long saveResult = commentService.save(commentDTO);
+        Long saveResult = commentService.save(commentDTO, userId);
         if (saveResult != null) {
             List<CommentDTO> commentDTOList = commentService.findAll(commentDTO.getBoardId());
             return new ResponseEntity<>(commentDTOList, HttpStatus.OK);

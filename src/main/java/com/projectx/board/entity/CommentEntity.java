@@ -26,9 +26,9 @@ public class CommentEntity extends BaseEntity {
     @JoinColumn(name = "board_id")
     private BoardEntity boardEntity;
 
-    public static CommentEntity toSaveEntity(CommentDTO commentDTO, BoardEntity boardEntity) {
+    public static CommentEntity toSaveEntity(CommentDTO commentDTO, BoardEntity boardEntity, String userId) {
         CommentEntity commentEntity = new CommentEntity();
-        commentEntity.setCommentWriter(commentDTO.getCommentWriter());
+        commentEntity.setCommentWriter(userId);
         commentEntity.setCommentContents(commentDTO.getCommentContents());
         commentEntity.setBoardEntity(boardEntity);
         return commentEntity;
