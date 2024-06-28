@@ -3,8 +3,8 @@
    - 실행시 DB의 테이블이 생성되지 않는 문제가 있어 yml 변경한 상태
 
 1. **resources** 의 파일 **구조를 변경**한 상태(**map branch 파일을 가져왔습니다.**)
-   - resources/static/templates 
-   - static>css, images, js 
+   - resources > static, templates 
+   - static > css, images, js 
    - templates>각종 html 을 모아둘 예정 (현재 : map.html) 
 
 2. Favorite Entity 수정(테이블 구조 변경됨) → Favorite 테이블 
