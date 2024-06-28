@@ -70,4 +70,3 @@ function clearMarkers() {
         placeList.innerHTML = '';
     }
 }
-
