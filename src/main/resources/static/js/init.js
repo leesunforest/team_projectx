@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
 function setupEventListeners() {
     document.getElementById('groupButton').addEventListener('click', openGroupModal);
     document.querySelector('.close').addEventListener('click', closeGroupModal);

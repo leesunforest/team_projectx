@@ -13,10 +13,14 @@ function initializeMap(callback) {
 
     map = new kakao.maps.Map(mapContainer, mapOption);
 
+    // Update the map center based on the user's current location
+    updateUserLocation(callback);
+}
+
+function updateUserLocation(callback) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
             userLocation = new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude);
-            mapOption.center = userLocation;
             map.setCenter(userLocation);
             if (typeof callback === 'function') callback();
         }, () => {

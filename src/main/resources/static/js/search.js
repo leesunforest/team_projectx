@@ -1,3 +1,10 @@
+function handleAddressSearchKeyDown(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent form submission if inside a form
+        executeAddressSearch();
+    }
+}
+
 function executeAddressSearch() {
     const input = document.getElementById('address-search-input');
     const keywordList = document.getElementById('address-search-results');
@@ -9,31 +16,20 @@ function executeAddressSearch() {
 
     ps.keywordSearch(keyword, (data, status) => {
         if (status === kakao.maps.services.Status.OK && data.length > 0) {
-            handleSearchResults(data, keywordList, input);
+            sortAndDisplayResults(data, keywordList);
         } else {
-            performAddressSearch(keyword, keywordList, input);
+            ps.categorySearch(keyword, (data, status) => {
+                if (status === kakao.maps.services.Status.OK && data.length > 0) {
+                    sortAndDisplayResults(data, keywordList);
+                } else {
+                    performAddressSearch(keyword, keywordList, input);
+                }
+            });
         }
     });
 }
 
-function searchAddress(input) {
-    const keywordList = document.getElementById('address-search-results');
-    keywordList.innerHTML = '';
-
-    const ps = new kakao.maps.services.Places();
-    const keyword = input.value.trim();
-    if (!keyword) return;
-
-    ps.keywordSearch(keyword, (data, status) => {
-        if (status === kakao.maps.services.Status.OK && data.length > 0) {
-            handleSearchResults(data, keywordList, input);
-        } else {
-            performAddressSearch(keyword, keywordList, input);
-        }
-    });
-}
-
-function handleSearchResults(data, keywordList, input) {
+function sortAndDisplayResults(data, keywordList) {
     if (userLocation) {
         data.sort((a, b) => {
             const distanceA = calculateDistance(userLocation, new kakao.maps.LatLng(a.y, a.x));
@@ -41,6 +37,7 @@ function handleSearchResults(data, keywordList, input) {
             return distanceA - distanceB;
         });
     }
+
     keywordList.innerHTML = '';
     data.forEach(item => {
         const div = document.createElement('div');
@@ -80,11 +77,35 @@ function performAddressSearch(keyword, keywordList, input) {
     const geocoder = new kakao.maps.services.Geocoder();
     geocoder.addressSearch(keyword, (result, status) => {
         if (status === kakao.maps.services.Status.OK && result.length > 0) {
-            handleSearchResults(result, keywordList, input);
+            sortAndDisplayResults(result, keywordList);
         } else {
             keywordList.innerHTML = '<div class="autocomplete-item">No results found</div>';
         }
     });
+}
+
+function useCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            const geocoder = new kakao.maps.services.Geocoder();
+            const coords = new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            geocoder.coord2Address(coords.getLng(), coords.getLat(), (result, status) => {
+                if (status === kakao.maps.services.Status.OK && result.length > 0) {
+                    const address = result[0].address.address_name;
+                    const input = document.getElementById('address-search-input');
+                    input.value = address;
+                    const keywordList = document.getElementById('address-search-results');
+                    keywordList.innerHTML = ''; // Clear any existing results
+                } else {
+                    alert('현재 위치의 주소를 찾을 수 없습니다.');
+                }
+            });
+        }, () => {
+            alert('현재 위치를 가져올 수 없습니다.');
+        });
+    } else {
+        alert('Geolocation을 지원하지 않는 브라우저입니다.');
+    }
 }
 
 function searchAndRecommendPlaces(center) {
@@ -155,7 +176,3 @@ function searchAndDisplayPlaces() {
         searchAndRecommendPlaces(userLocation);
     }
 }
-
-
-
-

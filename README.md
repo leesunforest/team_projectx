@@ -1,4 +1,4 @@
-# 안내사항(06.28VER)
+# 안내사항(06.29VER) : 카카오맵 API를 MVC 패턴으로 변경하기 위해 백업합니다.
 0. applicatin.yml 을 수정했습니다. 
    - 실행시 DB의 테이블이 생성되지 않는 문제가 있어 yml 변경한 상태
 
@@ -7,7 +7,9 @@
    - static > css, images, js 
    - templates>각종 html 을 모아둘 예정 (현재 : map.html) 
 
-2. Favorite Entity 수정(테이블 구조 변경됨) → Favorite 테이블 
+2. localhost:8082 에 접속을 하면 메인 페이지가 없는 문제가 발생하여 resource > static > index.html 을 생성하여 templates 의 map.html 로 이동하도록 했습니다.
+
+3. Favorite Entity 수정(테이블 구조 변경됨) → Favorite 테이블 
    ```
    CREATE TABLE `favorite` (
       `favorite_id` bigint NOT NULL AUTO_INCREMENT, 
@@ -23,7 +25,7 @@
    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
    ```
 
-3. 데이터구조에 따라 임의의 User Entity 생성(테이블 구조 변경됨)
+4. 데이터구조에 따라 임의의 User Entity 생성(테이블 구조 변경됨) : data.sql 파일을 이용하여 더미데이터(유저 50명) 생성
    ```
    CREATE TABLE `user` (
       `user_no` bigint NOT NULL AUTO_INCREMENT,
@@ -34,7 +36,6 @@
       PRIMARY KEY (`user_no`)
    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
    ```
-
 
 ---
 # 좋아요 주요기능
