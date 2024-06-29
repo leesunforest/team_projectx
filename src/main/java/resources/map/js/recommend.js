@@ -1,3 +1,5 @@
+let lastClickedPlaceMarker = null;
+
 function recommendPlaces(midpoint) {
     const ps = new kakao.maps.services.Places();
     const keywords = ['FD6', 'CE7'];
@@ -34,14 +36,33 @@ function recommendPlaces(midpoint) {
                     li.dataset.placeId = place.id; // placeId 저장
                     placeList.appendChild(li);
 
-                    kakao.maps.event.addListener(marker, 'click', () => {
+                    const clickHandler = () => {
                         closeAllPlaceInfos();
                         displayPlaceInfo(li, place);
                         map.panTo(latlng);
                         focusOnListItem(li);
                         fetchPlaceDetails(place.id, li); // 가게 상세 정보 불러오기
-                    });
 
+                        // 이전에 클릭된 마커가 있으면 원래 이미지로 되돌림
+                        if (lastClickedPlaceMarker) {
+                            lastClickedPlaceMarker.setImage(new kakao.maps.MarkerImage(
+                                '../img/enlarged-marker.png',
+                                new kakao.maps.Size(24, 35)
+                            ));
+                        }
+
+                        // 클릭된 마커 이미지 확대
+                        marker.setImage(new kakao.maps.MarkerImage(
+                            '../img/enlarged-marker.png', // 확대된 마커 이미지 URL
+                            new kakao.maps.Size(48, 70)
+                        ));
+                        marker.setZIndex(999);
+                        // 현재 클릭된 마커를 lastClickedPlaceMarker로 설정
+                        lastClickedPlaceMarker = marker;
+                    };
+
+                    kakao.maps.event.addListener(marker, 'click', clickHandler);
+                    li.querySelector('.place-name').addEventListener('click', clickHandler);
                     li.querySelector('.place-name').addEventListener('click', () => {
                         closeAllPlaceInfos();
                         displayPlaceInfo(li, place);
