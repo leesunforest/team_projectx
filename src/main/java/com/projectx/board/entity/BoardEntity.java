@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,16 +62,6 @@ public class BoardEntity extends BaseEntity {
         return boardEntity;
     }
 
-    public static BoardEntity toUpdateEntity(BoardDTO boardDTO) {
-        BoardEntity boardEntity = new BoardEntity();
-        boardEntity.setId(boardDTO.getId());
-        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
-        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
-        boardEntity.setBoardContents(boardDTO.getBoardContents());
-        boardEntity.setBoardHits(boardDTO.getBoardHits());
-        return boardEntity;
-    }
-
     public static BoardEntity toSaveFileEntity(BoardDTO boardDTO, User user) {
         BoardEntity boardEntity = new BoardEntity();
         boardEntity.setBoardWriter(user.getUserId());
@@ -78,6 +70,32 @@ public class BoardEntity extends BaseEntity {
         boardEntity.setBoardContents(boardDTO.getBoardContents());
         boardEntity.setBoardHits(0);
         boardEntity.setFileAttached(1); // 파일 있음.
+        return boardEntity;
+    }
+
+    public static BoardEntity toUpdateEntity(BoardDTO boardDTO, User user) {
+        BoardEntity boardEntity = new BoardEntity();
+        boardEntity.setId(boardDTO.getId());
+        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
+        boardEntity.setBoardContents(boardDTO.getBoardContents());
+        boardEntity.setBoardHits(boardDTO.getBoardHits());
+        boardEntity.setCreatedTime(boardDTO.getBoardCreatedTime());
+        boardEntity.setUpdatedTime(LocalDateTime.now());
+        boardEntity.setFileAttached(boardDTO.getFileAttached());
+        boardEntity.setUser(user);
+        return boardEntity;
+    }
+
+    public static BoardEntity toUpdateFileEntity(BoardDTO boardDTO, User user) {
+        BoardEntity boardEntity = new BoardEntity();
+        boardEntity.setId(boardDTO.getId());
+        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
+        boardEntity.setBoardContents(boardDTO.getBoardContents());
+        boardEntity.setBoardHits(boardDTO.getBoardHits());
+        boardEntity.setCreatedTime(boardDTO.getBoardCreatedTime());
+        boardEntity.setUpdatedTime(LocalDateTime.now());
+        boardEntity.setFileAttached(boardDTO.getFileAttached());
+        boardEntity.setUser(user);
         return boardEntity;
     }
 }

@@ -1,6 +1,7 @@
 package com.projectx.board.entity;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
+@Setter
 public class BaseEntity {
     @CreationTimestamp // 작성시간
     @Column(updatable = false, name = "created_at") // 수정할 때는 관여 안함.

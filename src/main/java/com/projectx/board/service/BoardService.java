@@ -99,10 +99,39 @@ public class BoardService {
         }
     }
 
-    public BoardDTO update(BoardDTO boardDTO) {
-        BoardEntity boardEntity = BoardEntity.toUpdateEntity(boardDTO);
-        boardRepository.save(boardEntity);
+    public BoardDTO update(BoardDTO boardDTO) throws IOException {
+        User user = userRepository.findById(boardDTO.getUserId());
+
+        // 기존 게시글 불러오기
+        BoardEntity existingBoard = boardRepository.findById(boardDTO.getId()).orElseThrow(() -> new RuntimeException("게시글 없음"));
+
+        // 파일 첨부 여부에 따라 로직 분리
+        if (boardDTO.getBoardFile().isEmpty()) {
+            // 첨부 파일 없음.
+            BoardEntity boardEntity = BoardEntity.toUpdateEntity(boardDTO, user);
+            boardRepository.save(boardEntity);
+        } else {
+            // 첨부 파일 있음.
+            MultipartFile boardFile = boardDTO.getBoardFile();
+            String originalFilename = boardFile.getOriginalFilename();
+            String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
+            String savePath = "C:/springboot_img/" + storedFileName;
+
+            boardFile.transferTo(new File(savePath));
+
+            BoardEntity boardEntity = BoardEntity.toUpdateFileEntity(boardDTO, user);
+            boardRepository.save(boardEntity);
+
+            // 기존 파일 삭제 및 새 파일 저장
+            boardFileRepository.deleteByBoardId(boardDTO.getId());
+            BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(boardEntity, originalFilename, storedFileName);
+            boardFileRepository.save(boardFileEntity);
+        }
+
         return findById(boardDTO.getId());
+//        BoardEntity boardEntity = BoardEntity.toUpdateEntity(boardDTO);
+//        boardRepository.save(boardEntity);
+//        return findById(boardDTO.getId());
     }
 
     public void delete(Long id) {

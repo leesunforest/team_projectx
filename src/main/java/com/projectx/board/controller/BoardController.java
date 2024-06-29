@@ -10,9 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -80,7 +82,11 @@ public class BoardController {
 
     //게시글 수정을 처리하는 함수(수정 폼에서 입력된 데이터를 받아 게시글을 실제로 수정)
     @PostMapping("/update")
-    public String update(@ModelAttribute BoardDTO boardDTO, Model model) {
+    public String update(@ModelAttribute BoardDTO boardDTO, Principal principal, Model model) throws IOException {
+
+        if(!boardDTO.getUserId().equals(principal.getName())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
         BoardDTO board = boardService.update(boardDTO);
         model.addAttribute("board", board);
         return "boardDetail";
