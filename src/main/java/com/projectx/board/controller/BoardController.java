@@ -67,7 +67,7 @@ public class BoardController {
         model.addAttribute("commentList", commentDTOList);
         model.addAttribute("board", boardDTO);
         model.addAttribute("page", pageable.getPageNumber());
-        return "detail";
+        return "boardDetail";
     }
 
     //특정 id를 가진 게시글의 수정 폼을 보여주는 함수 (수정 버튼 클릭시 호출)
@@ -75,7 +75,7 @@ public class BoardController {
     public String updateForm(@PathVariable Long id, Model model) {
         BoardDTO boardDTO = boardService.findById(id);
         model.addAttribute("boardUpdate", boardDTO);
-        return "update";
+        return "boardUpdate";
     }
 
     //게시글 수정을 처리하는 함수(수정 폼에서 입력된 데이터를 받아 게시글을 실제로 수정)
@@ -83,7 +83,7 @@ public class BoardController {
     public String update(@ModelAttribute BoardDTO boardDTO, Model model) {
         BoardDTO board = boardService.update(boardDTO);
         model.addAttribute("board", board);
-        return "detail";
+        return "boardDetail";
 //        return "redirect:/board/" + boardDTO.getId();
     }
 
