@@ -31,10 +31,10 @@ public class BoardEntity extends BaseEntity {
     private String boardContents;
 
     @Column
-    private int boardHits;
+    private Integer boardHits;
 
     @Column
-    private int fileAttached; // 1 or 0
+    private Integer fileAttached; // 1 or 0
 
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
