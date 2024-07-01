@@ -53,7 +53,7 @@ public class BoardEntity extends BaseEntity {
     // DTO에 있는 객체를 Entity로 옮겨닮는 작업.
     public static BoardEntity toSaveEntity(BoardDTO boardDTO, User user) { // static 형식의 메서드로 정의
         BoardEntity boardEntity = new BoardEntity();
-        boardEntity.setBoardWriter(user.getUserId());
+        boardEntity.setBoardWriter(user.getId());
         boardEntity.setUser(user);
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
@@ -64,7 +64,7 @@ public class BoardEntity extends BaseEntity {
 
     public static BoardEntity toSaveFileEntity(BoardDTO boardDTO, User user) {
         BoardEntity boardEntity = new BoardEntity();
-        boardEntity.setBoardWriter(user.getUserId());
+        boardEntity.setBoardWriter(user.getId());
         boardEntity.setUser((user));
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());

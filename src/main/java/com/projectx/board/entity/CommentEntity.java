@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 @Setter
 @Table(name = "comment")
 public class CommentEntity extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")

@@ -50,7 +50,8 @@ public class BoardController {
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 6);
         Page<BoardItemDTO> boardList = boardService.getBoardItemPage(searchQuery, pageable);
         model.addAttribute("boardList", boardList);
-        //model.addAttribute("maxPage", 5);
+        model.addAttribute("maxPage", 5);
+        model.addAttribute("searchQuery", searchQuery);
         return "boardList";
     }
 

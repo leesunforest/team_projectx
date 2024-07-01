@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 @Setter
 @Table(name = "board_file")
 public class BoardFileEntity extends BaseEntity {
+
     @Id
     @Column(name = "board_file_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

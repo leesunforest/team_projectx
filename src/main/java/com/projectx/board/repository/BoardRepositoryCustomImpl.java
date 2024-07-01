@@ -1,6 +1,8 @@
 package com.projectx.board.repository;
 
 import com.projectx.board.dto.BoardItemDTO;
+import com.projectx.board.dto.QBoardItemDTO;
+import com.projectx.board.entity.QBoardEntity;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,18 +23,19 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
     }
 
     private BooleanExpression boardCityOrTitleLike(String searchQuery) {
-        if (StringUtils.isEmpty(searchQuery)) {
+        if (StringUtils.isEmpty(searchQuery) || searchQuery == null) {
             return null;
         }
 
-        BooleanExpression cityContains = QBoard.board.city.like("%" + searchQuery + "%");
-        BooleanExpression titleContains = Qboard.board.boardTitle.like("%" + searchQuery + "%");
+        BooleanExpression cityContains = QBoardEntity.boardEntity.city.like("%" + searchQuery + "%");
+        BooleanExpression titleContains = QBoardEntity.boardEntity.boardTitle.like("%" + searchQuery + "%");
 
         return cityContains.or(titleContains);
     }
+
     @Override
     public Page<BoardItemDTO> getBoardItemPage(String searchQuery, Pageable pageable) {
-        QBoard board = QBoard.board;
+        QBoardEntity board = QBoardEntity.boardEntity;
 
         QueryResults<BoardItemDTO> results = queryFactory
                 .select(
@@ -40,6 +43,7 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
                                 board.id,
                                 board.boardTitle)
                         )
+                .from(board)
                 .where(boardCityOrTitleLike(searchQuery))
                 .orderBy(board.id.desc())
                 .offset(pageable.getOffset())

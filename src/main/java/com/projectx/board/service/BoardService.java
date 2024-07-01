@@ -123,7 +123,7 @@ public class BoardService {
             boardRepository.save(boardEntity);
 
             // 기존 파일 삭제 및 새 파일 저장
-            boardFileRepository.deleteByBoardId(boardDTO.getId());
+            boardFileRepository.deleteByBoardEntityId(boardDTO.getId());
             BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(boardEntity, originalFilename, storedFileName);
             boardFileRepository.save(boardFileEntity);
         }

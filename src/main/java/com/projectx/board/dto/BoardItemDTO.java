@@ -7,11 +7,11 @@ import lombok.Setter;
 @Getter @Setter
 public class BoardItemDTO {
     private Long id;
-    private String title;
+    private String boardTitle;
 
     @QueryProjection
     public BoardItemDTO(Long id, String title) {
         this.id = id;
-        this.title = title;
+        this.boardTitle = title;
     }
 }
