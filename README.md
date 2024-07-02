@@ -1,78 +1,70 @@
-## 📺 개발환경
-- <img src="https://img.shields.io/badge/IDE-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/Intellij-000000?style=for-the-badge&logo=Intellij&logoColor=white"><img src="https://img.shields.io/badge/Ultimate-515151?style=for-the-badge">
-- <img src="https://img.shields.io/badge/Framework-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"><img src="https://img.shields.io/badge/3.3.0-515151?style=for-the-badge">
-- <img src="https://img.shields.io/badge/Build-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white"><img src="https://img.shields.io/badge/7.1.1-515151?style=for-the-badge">
-- <img src="https://img.shields.io/badge/Language-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/java-%23ED8B00?style=for-the-badge&logo=openjdk&logoColor=white"><img src="https://img.shields.io/badge/17-515151?style=for-the-badge">
-- <img src="https://img.shields.io/badge/Database-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/MySQL-FFFFFF?style=for-the-badge">
-- <img src="https://img.shields.io/badge/Project Encoding-%23121011?style=for-the-badge"><img src="https://img.shields.io/badge/UTF 8-EA2328?style=for-the-badge">
+# 안내사항(06.29VER) : 카카오맵 API를 MVC 패턴으로 변경하기 위해 백업합니다.
+0. applicatin.yml 을 수정했습니다. 
+   - 실행시 DB의 테이블이 생성되지 않는 문제가 있어 yml 변경한 상태
 
-# 게시판 주요기능 
-1. 글쓰기(/board/save)
-2. 글목록(/board/)
-3. 글조회(/board/{id})
-4. 글수정(/board/update/{id})
-    - 상세화면에서 수정 버튼 클릭 
-    - 서버에서 해당 게시글의 정보를 가지고 수정 화면 출력 
-    - 제목, 내용 수정 입력 받아서 서버로 요청 
-    - 수정 처리 
-5. 글삭제(/board/delete/{id})
-6. 페이징처리(/board/paging)
-    - /board/paging?page=2
-    - /board/paging/2
-    - 게시글 14
-      - 한페이지에 5개씩 => 3개
-      - 한페이지에 3개씩 => 5개
-7. 파일(이미지)첨부하기 
-   - 단일 파일 첨부
-   - 다중 파일 첨부
-   - 파일 첨부와 관련하여 추가될 부분들  
-     - save.html  
-     - BoardDTO  
-     - BoardService.save()  
-     - BoardEntity
-     - BoardFileEntity, BoardFileRepository 추가
-     - detail.html
+1. **resources** 의 파일 **구조를 변경**한 상태(**map branch 파일을 가져왔습니다.**)
+   - resources > static, templates 
+   - static > css, images, js 
+   - templates>각종 html 을 모아둘 예정 (현재 : map.html) 
 
-    - board_table(부모) - board_file_table(자식)
-```
-create table board_table
-(
-id             bigint auto_increment primary key,
-created_time   datetime     null,
-updated_time   datetime     null,
-board_contents varchar(500) null,
-board_hits     int          null,
-board_pass     varchar(255) null,
-board_title    varchar(255) null,
-board_writer   varchar(20)  not null,
-file_attached  int          null
-);
+2. localhost:8082 에 접속을 하면 메인 페이지가 없는 문제가 발생하여 resource > static > index.html 을 생성하여 templates 의 map.html 로 이동하도록 했습니다.
 
-create table board_file_table
-(
-id                 bigint auto_increment primary key,
-created_time       datetime     null,
-updated_time       datetime     null,
-original_file_name varchar(255) null,
-stored_file_name   varchar(255) null,
-board_id           bigint       null,
-constraint FKcfxqly70ddd02xbou0jxgh4o3
-    foreign key (board_id) references board_table (id) on delete cascade
-);
-```
+3. Favorite Entity 수정(테이블 구조 변경됨) → Favorite 테이블 
+   ```
+   CREATE TABLE `favorite` (
+      `favorite_id` bigint NOT NULL AUTO_INCREMENT, 
+      `favorite_at` datetime(6) NOT NULL,
+      `store_address` varchar(255) NOT NULL,
+      `store_name` varchar(255) NOT NULL,
+      `store_number` varchar(255) DEFAULT NULL,
+      `user_id` varchar(15) NOT NULL,
+      `user_no` bigint NOT NULL,
+      PRIMARY KEY (`favorite_id`),
+      KEY `FKa0d7ydro0ug9nkxycl4igg529` (`user_no`),
+      CONSTRAINT `FKa0d7ydro0ug9nkxycl4igg529` FOREIGN KEY (`user_no`) REFERENCES `user`(`user_no`)
+   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+   ```
 
+4. 데이터구조에 따라 임의의 User Entity 생성(테이블 구조 변경됨) : data.sql 파일을 이용하여 더미데이터(유저 50명) 생성
+   ```
+   CREATE TABLE `user` (
+      `user_no` bigint NOT NULL AUTO_INCREMENT,
+      `user_email` varchar(50) NOT NULL,
+      `user_id` varchar(15) NOT NULL,
+      `user_join` datetime(6) NOT NULL,
+      `user_pw` varchar(20) NOT NULL,
+      PRIMARY KEY (`user_no`)
+   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+   ```
 
+---
+# 좋아요 주요기능
+1. 가게 저장
+   - 가게의 정보를 JSON 으로 넘겨받아 DB에 저장
+2. 가게 목록 조회
+   - 가게 목록에서 원하는 가게를 누르면 가게 상세 정보가 보이도록 하기
+3. 좋아요한 가게 상세보기
+   - 가게 목록을 누르면 네이버 등의 사이트에 등록된 가게 정보로 바로 넘어가게 할 것인가에 대해 논의하기
+4. 가게 삭제
 
+---
+## 현재 좋아요 Table
+   ```
+   CREATE TABLE `favorite` (
+      `favorite_id` bigint NOT NULL AUTO_INCREMENT, 
+      `favorite_at` datetime(6) NOT NULL,
+      `store_address` varchar(255) NOT NULL,
+      `store_name` varchar(255) NOT NULL,
+      `store_number` varchar(255) DEFAULT NULL,
+      `user_id` varchar(15) NOT NULL,
+      `user_no` bigint NOT NULL,
+      PRIMARY KEY (`favorite_id`),
+      KEY `FKa0d7ydro0ug9nkxycl4igg529` (`user_no`),
+      CONSTRAINT `FKa0d7ydro0ug9nkxycl4igg529` FOREIGN KEY (`user_no`) REFERENCES `user`(`user_no`)
+   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+   ```
 
-
-
-
-
-
-
-## mysql DataBase 계정 생성 및 권한 부여 
-```
-create database team;
-create user user_team@localhost identified by '1234';
-grant all privileges on team.* to team@localhost;
-```
+## 현재 Favorite 구현되어야 하는 사항
+- Service, Controller 구현 
+- map.html 에서 저장 버튼 찾기 또는 구현 
+- 가게 정보를 JSON 값으로 받아와 DB에 저장

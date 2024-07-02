@@ -2,10 +2,7 @@ let map, infowindow, userLocation = null;
 let markers = [], locations = [], placeMarkers = [];
 let currentCategory = null;
 
-const midpointMarkerIcon = 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png';
-const starMarkerIcon = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png';
-
-function initializeMap(callback) {
+ function initializeMap(callback) {
     infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
     const mapContainer = document.getElementById('map');
     const defaultCenter = new kakao.maps.LatLng(37.5665, 126.9780);

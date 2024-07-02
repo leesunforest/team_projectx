@@ -1,43 +1,44 @@
 body, html {
     height: 100%;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     box-sizing: border-box;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
 header {
-    background-color: #333;
-    color: white;
-    padding: 1rem;
+    //background-color: #333;
+    //color: white;
+    //padding: 1rem;
     text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
 }
 
-main.fullscreen {
+main.fullscreen, main {
     height: calc(100% - 80px);
     display: flex;
     flex-direction: row;
     width: 100%;
-}
-
-main {
-    height: calc(100% - 80px);
-    display: flex;
-    flex-direction: row;
-    width: 100%;
+    margin-top: 80px; /* header height */
 }
 
 #map {
     flex-grow: 1;
     height: 100%;
-    width: 100%; /* 기본적으로 전체 화면을 차지하도록 설정 */
+    width: 75%; /* 기본적으로 전체 화면을 차지하도록 설정 */
 }
 
 #left-panel {
     width: 25%;
     height: 100%;
     overflow-y: auto;
-    background: white;
-    padding: 10px;
+    background: #fff;
+    padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -45,6 +46,7 @@ main {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 10px;
 }
 
 #place-list {
@@ -55,10 +57,15 @@ main {
 
 #place-list li {
     margin-bottom: 10px;
-    padding: 10px;
-    background: #f9f9f9;
+    padding: 15px;
+    background: #fff;
     border: 1px solid #ddd;
     border-radius: 5px;
+    transition: background 0.3s;
+}
+
+#place-list li:hover {
+    background: #f0f0f0;
 }
 
 #pagination {
@@ -69,6 +76,11 @@ main {
 #pagination a {
     display: inline-block;
     margin-right: 10px;
+    padding: 5px 10px;
+    background: #007BFF;
+    color: white;
+    border-radius: 3px;
+    text-decoration: none;
 }
 
 #pagination .on {
@@ -80,7 +92,7 @@ main {
 .place-info {
     margin-top: 10px;
     padding: 10px;
-    background: #f0f0f0;
+    background: #f9f9f9;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
@@ -101,13 +113,13 @@ main {
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    transition: background 0.3s;
 }
 
 #top-left-buttons button:hover {
     background-color: #0056b3;
 }
 
-/* 추가된 CSS */
 #right-panel {
     display: none;
 }
@@ -136,6 +148,7 @@ main {
     color: #fff;
     border-radius: 5px;
     cursor: pointer;
+    transition: background 0.3s;
 }
 
 .top-bar button:hover {
@@ -157,11 +170,12 @@ main {
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: #fff;
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
+    border-radius: 10px;
 }
 
 .close {
@@ -192,6 +206,7 @@ main {
     transform: translateY(-50%);
     text-align: center;
     line-height: 1rem;
+    transition: background 0.3s;
 }
 
 .remove-button:hover {
@@ -250,12 +265,29 @@ main {
     line-height: 1rem;
     text-align: center;
     border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#group-modal #addGroup:hover {
+    background-color: #218838;
 }
 
 #group-modal #findMidpoint {
     display: block;
     margin: 0 auto;
     margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#group-modal #findMidpoint:hover {
+    background-color: #0056b3;
 }
 
 #address-search-modal .modal-content {
@@ -283,6 +315,7 @@ main {
     padding: 10px;
     margin-top: 5px;
 }
+
 .place-container {
     position: relative;
     padding-right: 50px; /* 버튼이 겹치지 않도록 패딩 추가 */
@@ -304,10 +337,15 @@ main {
     justify-content: center;
     font-size: 12px;
     line-height: 1;
+    transition: background 0.3s;
 }
 
 .save-btn[data-saved="true"] {
     background-color: #dc3545;
+}
+
+.save-btn:hover {
+    background-color: #0056b3;
 }
 
 #current-location-button {
@@ -319,8 +357,20 @@ main {
     cursor: pointer;
     border-radius: 5px;
     width: 100%;
+    transition: background 0.3s;
 }
 
 #current-location-button:hover {
     background-color: #218838;
+}
+
+.label {
+    background-color: white;
+    border: 1px solid black;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 14px;
+    text-align: center;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
 }

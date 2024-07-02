@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>지도 메인 페이지</title>
-    <link rel="stylesheet" href="../css/styles.css">
-    <script src="../js/apikey.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/apikey.js"></script>
     <script>
-        document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_MAPS_API_KEY + '&libraries=services"><\/script>');
+        document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey='+ KAKAO_MAPS_API_KEY + '&libraries=services"><\/script>');
     </script>
-    <script defer src="../js/map-utils.js"></script>
-    <script defer src="../js/init.js"></script>
-    <script defer src="../js/map.js"></script>
-    <script defer src="../js/modal.js"></script>
-    <script defer src="../js/group.js"></script>
-    <script defer src="../js/midpoint.js"></script>
-    <script defer src="../js/recommend.js"></script>
-    <script defer src="../js/filter.js"></script>
-    <script defer src="../js/search.js"></script>
-    <script defer src="../js/category.js"></script>
+    <script defer src="/js/map-utils.js"></script>
+    <script defer src="/js/init.js"></script>
+    <script defer src="/js/map.js"></script>
+    <script defer src="/js/modal.js"></script>
+    <script defer src="/js/group.js"></script>
+    <script defer src="/js/midpoint.js"></script>
+    <script defer src="/js/recommend.js"></script>
+    <script defer src="/js/filter.js"></script>
+    <script defer src="/js/search.js"></script>
+    <script defer src="/js/category.js"></script>
 </head>
 <body>
 <header>
@@ -32,7 +32,8 @@
 <main class="fullscreen">
     <div id="map">
         <div id="top-left-buttons">
-            <button id="myPageButton" onclick="location.href='mypage.html'">마이페이지</button>
+            <button id="myPageButton" onclick="location.href='/favorites'">마이페이지</button>
+
             <button id="groupButton">그룹 참여</button>
         </div>
     </div>
@@ -88,6 +89,13 @@
         document.getElementById('right-panel').style.display = 'none';
     }
 </script>
+
+<div id="favoriteListModal" class="modal">
+    <div class="modal-content">
+        <span class="close-favorite-modal">&times;</span>
+        <div id="favoriteListContainer"></div>
+    </div>
+</div>
 
 </body>
 </html>

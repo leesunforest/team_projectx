@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>저장목록</title>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          const userNo = 1; // 임의의 사용자 고유 번호
+          fetch(`/api/favorites/${userNo}`)
+              .then(response => response.json())
+              .then(data => {
+                  const list = document.getElementById('favoriteList');
+                  list.innerHTML = '';
+                  data.forEach(favorite => {
+                      const listItem = document.createElement('li');
+                      listItem.textContent = `가게 이름: ${favorite.storeName}, 주소: ${favorite.storeAddress}, 전화번호: ${favorite.storeNumber}`;
+
+                      // 상세보기 버튼
+                      const detailButtom = document.createElement('buttom');
+                      detailButtom.textContent = '상세보기';
+                      detailButtom.onclick = function () {
+                          fetch(`/api/favorites/details/${favorite.favoriteId}`)
+                              .then(response => response.json())
+                              .then(detail => {
+                                  alert(`가게 이름: ${detail.storeName}\n주소: ${detail.storeAddress}\n전화번호: ${detail.storeNumber}\n저장 날짜: ${detail.favoriteAt}`);
+                              }); // end detailsButton fetch
+                      }; // end detailButtom
+
+                      // 삭제 버튼
+                      const deleteButton = document.createElement('button');
+                      deleteButton.textContent = '삭제';
+                      deleteButton.onclick = function () {
+                          fetch(`/api/favorites/delete/${favorite.favoriteId}`, {
+                              method: 'DELETE'
+                          })
+                              .then(() => {
+                                  alert('삭제되었습니다.');
+                                  location.reload();
+                              });
+                      }; // end deleteButton onclick
+
+                      listItem.appendChild(detailButtom);
+                      listItem.appendChild(deleteButton);
+                      list.appendChild(listItem);
+                  }); // end data.forEach
+              }); // end fetch
+      });
+    </script>
+</head>
+<body>
+    <h1>Favorite List</h1>
+    <ul id="favoriteList"></ul>
+</body>
+</html>

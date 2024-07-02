@@ -35,6 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+C:\dev\java3\src\main\resources\application.yml
 
-### map api key ###
-apikey.js
+### 추가되면 안 되는 파일 모음 ###
+/src/main/resources/static/js/apikey.js

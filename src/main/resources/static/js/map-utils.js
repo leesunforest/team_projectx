@@ -40,7 +40,7 @@ function findMidpoint() {
                 if (isValid) {
                     const midpoint = calculateGreatCircleMidpoint(locations);
                     clearMarkers();
-                    locations.forEach(location => addMarker(location.latlng, location.name, false, false, true));
+                    locations.forEach(location => addMarker(location.latlng, location.name, false, false, null, location.name));
                     addMarker(midpoint, '중간지점', true);
                     map.setCenter(midpoint);
                     recommendPlaces(midpoint);
@@ -55,25 +55,67 @@ function findMidpoint() {
         .catch(alert);
 }
 
+// 아이콘 경로 정의
+const midpointMarkerIcon = 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png';
+const cafeMarkerIcon = '/images/cafemarker.png';
+const restaurantMarkerIcon = '/images/restaurantmarker.png';
+const enlargedCafeMarkerIcon = '/images/enlarged-cafemarker.png';
+const enlargedRestaurantMarkerIcon = '/images/enlarged-restaurantmarker.png';
 
-
-function addMarker(position, title, isMidpoint = false, isRecommendedPlace = false, isUser = false) {
+function addMarker(position, title, isMidpoint = false, isRecommendedPlace = false, category = null, userId = null) {
     let markerImage = null;
+
     if (isMidpoint) {
         markerImage = new kakao.maps.MarkerImage(midpointMarkerIcon, new kakao.maps.Size(24, 35));
     } else if (isRecommendedPlace) {
-        markerImage = new kakao.maps.MarkerImage(starMarkerIcon, new kakao.maps.Size(24, 35));
+        if (category === 'FD6') {
+            markerImage = new kakao.maps.MarkerImage(restaurantMarkerIcon, new kakao.maps.Size(24, 35));
+        } else if (category === 'CE7') {
+            markerImage = new kakao.maps.MarkerImage(cafeMarkerIcon, new kakao.maps.Size(24, 35));
+        }
     }
 
-    const marker = new kakao.maps.Marker({ map, position, title, image: markerImage });
-    if (isUser) {
-        const infowindow = new kakao.maps.InfoWindow({ content: `<div style="padding:5px;white-space:nowrap;">${title}</div>` });
-        infowindow.open(map, marker);
+    const marker = new kakao.maps.Marker({
+        map,
+        position,
+        title,
+        image: markerImage
+    });
+    marker.normalIcon = markerImage;
+
+    // 사용자 아이디가 있는 경우 레이블 추가
+    if (userId !== null) {
+        const label = new kakao.maps.CustomOverlay({
+            map,
+            position,
+            content: `<div class="label">${userId}</div>`,
+            yAnchor: 1,
+            xAnchor: 0.5
+        });
+        marker.label = label;
     }
+
+    // 클릭 이벤트 추가
+    kakao.maps.event.addListener(marker, 'click', function() {
+        // 이전에 클릭된 마커가 있으면 원래 이미지로 되돌림
+        if (lastClickedMarker) {
+            lastClickedMarker.setImage(lastClickedMarker.normalIcon);
+        }
+        // 클릭된 마커 이미지 확대
+        if (category === 'FD6') {
+            marker.setImage(new kakao.maps.MarkerImage(enlargedRestaurantMarkerIcon, new kakao.maps.Size(48, 70)));
+        } else if (category === 'CE7') {
+            marker.setImage(new kakao.maps.MarkerImage(enlargedCafeMarkerIcon, new kakao.maps.Size(48, 70)));
+        }
+        // 현재 클릭된 마커를 lastClickedMarker로 설정
+        lastClickedMarker = marker;
+    });
 
     markers.push(marker);
     return marker;
 }
+
+
 
 function clearMarkers() {
     markers.forEach(marker => marker.setMap(null));

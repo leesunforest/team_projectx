@@ -1,3 +1,5 @@
+let lastClickedMarker = null;
+
 function recommendPlaces(midpoint) {
     const ps = new kakao.maps.services.Places();
     const keywords = ['FD6', 'CE7'];
@@ -11,7 +13,7 @@ function recommendPlaces(midpoint) {
             if (status === kakao.maps.services.Status.OK) {
                 data.forEach(place => {
                     const latlng = new kakao.maps.LatLng(place.y, place.x);
-                    const marker = addMarker(latlng, place.place_name, false, true);
+                    const marker = addMarker(latlng, place.place_name, false, true, keyword);
                     marker.category = keyword;
                     placeMarkers.push(marker);
 
@@ -34,20 +36,30 @@ function recommendPlaces(midpoint) {
                     li.dataset.placeId = place.id; // placeId 저장
                     placeList.appendChild(li);
 
-                    kakao.maps.event.addListener(marker, 'click', () => {
+                    const clickHandler = () => {
                         closeAllPlaceInfos();
                         displayPlaceInfo(li, place);
                         map.panTo(latlng);
                         focusOnListItem(li);
                         fetchPlaceDetails(place.id, li); // 가게 상세 정보 불러오기
-                    });
 
-                    li.querySelector('.place-name').addEventListener('click', () => {
-                        closeAllPlaceInfos();
-                        displayPlaceInfo(li, place);
-                        map.panTo(latlng);
-                        fetchPlaceDetails(place.id, li); // 가게 상세 정보 불러오기
-                    });
+                        // 이전에 클릭된 마커가 있으면 원래 이미지로 되돌림
+                        if (lastClickedMarker && lastClickedMarker instanceof kakao.maps.Marker) {
+                            lastClickedMarker.setImage(lastClickedMarker.normalIcon);
+                        }
+                        // 클릭된 마커 이미지 확대
+                        if (keyword === 'FD6') {
+                            marker.setImage(new kakao.maps.MarkerImage('/images/enlarged-restaurantmarker.png', new kakao.maps.Size(48, 70)));
+                        } else if (keyword === 'CE7') {
+                            marker.setImage(new kakao.maps.MarkerImage('/images/enlarged-cafemarker.png', new kakao.maps.Size(48, 70)));
+                        }
+
+                        // 현재 클릭된 마커를 lastClickedMarker로 설정
+                        lastClickedMarker = marker;
+                    };
+
+                    kakao.maps.event.addListener(marker, 'click', clickHandler);
+                    li.querySelector('.place-name').addEventListener('click', clickHandler);
 
                     const saveBtn = li.querySelector('.save-btn');
                     saveBtn.addEventListener('click', () => {
