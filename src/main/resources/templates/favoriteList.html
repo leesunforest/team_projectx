@@ -4,10 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>저장목록</title>
+
+    <h1>FavoriteList</h1>
+    <table>
+        <thead>
+            <tr>
+                <th type="hidden">ID</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="store : ${stores}">
+                <td th:text="${store.name}"></td>
+                <td th:text="${store.address}"></td>
+                <td th:text="${store.number}"></td>
+            </tr>
+        </tbody>
+    </table>
+
     <script>
       document.addEventListener('DOMContentLoaded', function () {
           const userNo = 1; // 임의의 사용자 고유 번호
-          fetch(`/api/favorites/${userNo}`)
+          fetch(`/favorites/${userNo}`)
               .then(response => response.json())
               .then(data => {
                   const list = document.getElementById('favoriteList');
@@ -17,10 +37,10 @@
                       listItem.textContent = `가게 이름: ${favorite.storeName}, 주소: ${favorite.storeAddress}, 전화번호: ${favorite.storeNumber}`;
 
                       // 상세보기 버튼
-                      const detailButtom = document.createElement('buttom');
-                      detailButtom.textContent = '상세보기';
-                      detailButtom.onclick = function () {
-                          fetch(`/api/favorites/details/${favorite.favoriteId}`)
+                      const detailButton = document.createElement('button');
+                      detailButton.textContent = '상세보기';
+                      detailButton.onclick = function () {
+                          fetch(`/favorites/details/${favorite.favoriteId}`)
                               .then(response => response.json())
                               .then(detail => {
                                   alert(`가게 이름: ${detail.storeName}\n주소: ${detail.storeAddress}\n전화번호: ${detail.storeNumber}\n저장 날짜: ${detail.favoriteAt}`);
@@ -31,7 +51,7 @@
                       const deleteButton = document.createElement('button');
                       deleteButton.textContent = '삭제';
                       deleteButton.onclick = function () {
-                          fetch(`/api/favorites/delete/${favorite.favoriteId}`, {
+                          fetch(`/favorites/delete/${favorite.favoriteId}`, {
                               method: 'DELETE'
                           })
                               .then(() => {

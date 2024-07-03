@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity @Getter
@@ -29,7 +30,7 @@ public class User {
     private LocalDateTime userJoin; // 가입일자
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Favorite> favorites;
+    private List<Favorite> favorites = new ArrayList<>();
 
     @Builder
     public User(String userId, String userPw, String userEmail) {

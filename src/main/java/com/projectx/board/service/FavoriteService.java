@@ -4,6 +4,8 @@ import com.projectx.board.entity.Favorite;
 import com.projectx.board.entity.User;
 import com.projectx.board.repository.FavoriteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

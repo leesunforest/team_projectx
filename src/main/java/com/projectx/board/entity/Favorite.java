@@ -1,5 +1,6 @@
 package com.projectx.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,6 +31,7 @@ public class Favorite {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no", nullable = false)
+    @JsonIgnore
     private User user; // 사용자 고유 번호
 
     @Column(name = "user_id", nullable = false, length = 15)
