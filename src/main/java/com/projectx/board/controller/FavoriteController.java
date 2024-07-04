@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/favorites")
+@RequestMapping("/mypage/favorites")
 @RequiredArgsConstructor
 public class FavoriteController {
 
