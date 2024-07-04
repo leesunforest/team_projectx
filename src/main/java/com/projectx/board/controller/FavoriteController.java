@@ -99,7 +99,6 @@ public class FavoriteController {
     }
      */
 
-
     // 저장한 정보 상세 보기 요청 메서드
     @GetMapping("/details/{favoriteId}")
     public FavoriteResponseDTO getFavoriteDetails(@PathVariable Long favoriteId) {
@@ -114,11 +113,12 @@ public class FavoriteController {
         try {
             // 삭제 로직
             favoriteService.deleteFavorite(favoriteId);
+            
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            // 예외처리
+            // 예외 처리
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting the favorite: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("삭제에 실패했습니다: " + e.getMessage());
         }
     }
 

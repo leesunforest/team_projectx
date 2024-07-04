@@ -8,29 +8,23 @@
 </head>
 <body>
 <div class="container">
-    <h1>Favorite List</h1>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>이름</th>
-            <th>주소</th>
-            <th>전화번호</th>
-            <th>저장날짜</th>
-            <th> </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="favorite : ${favorites}">
-            <td th:text="${favorite.storeName}">Store Name</td>
-            <td th:text="${favorite.storeAddress}">Store Address</td>
-            <td th:text="${favorite.storeNumber}">Store Number</td>
-            <td th:text="${favorite.formattedFavoriteAt}">Favorite At</td>
-            <td>
-                <button class="btn btn-danger" th:attr="data-id=${favorite.favoriteId}" onclick="deleteFavorite(this)">삭제</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <h1>찜목록</h1>
+    <ul class="list-group">
+        <!-- favorites를 순회하며 찜목록을 표시 -->
+        <th:block th:each="favorite : ${favorites}">
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 th:text="${favorite.storeName}">가게 이름</h2>
+                        <p th:text="'주소: ' + ${favorite.storeAddress}">가게 주소</p>
+                        <p th:text="'전화번호: ' + ${favorite.storeNumber}">가게 전화번호</p>
+                        <p th:text="'저장날짜: ' + ${favorite.formattedFavoriteAt}">저장날짜</p>
+                    </div>
+                    <button class="btn btn-danger" th:attr="data-id=${favorite.favoriteId}" onclick="deleteFavorite(this)">삭제</button>
+                </div>
+            </li>
+        </th:block>
+    </ul>
 </div>
 
 <script>
@@ -38,12 +32,12 @@
         if (confirm("삭제하시겠습니까?")) {
             const favoriteId = $(button).attr('data-id');
             $.ajax({
-                url: '/favorites/delete/' + favoriteId,
+                url: '/mypage/favorites/delete/' + favoriteId,
                 type: 'DELETE',
                 success: function(result) {
                     alert('삭제되었습니다.');
-                    // Remove the row from the table
-                    $(button).closest('tr').remove();
+                    // Remove the row from the list
+                    $(button).closest('li').remove();
                 },
                 error: function(xhr, status, error) {
                     alert('삭제에 실패했습니다 : ' + xhr.responseText);
