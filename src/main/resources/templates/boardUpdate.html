@@ -46,36 +46,25 @@
 </head>
 <body>
     <div class="container">
-        <h3>제목</h3>
-        <input type="text" id="boardTitle" th:value="${boardUpdate.boardTitle}"> <br>
-        <br>
-        <h3>사진 첨부하기</h3>
-        <input type="file" id="boardFile"> <br>
-        <br>
-        <h3>내용</h3>
-        <textarea id="boardContents" cols="30" rows="10" th:text="${boardUpdate.boardContents}"></textarea> <br>
-        <br>
-        <div class="buttons">
-            <input type="button" value="취소" onclick="cancelReq()">
-            <input type="button" value="글수정" onclick="boardUpdate()">
-        </div>
+        <form action="/board/update" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="id" th:value="${boardUpdate.id}">
+            <h3>제목</h3>
+            <input type="text" name="boardTitle" th:value="${boardUpdate.boardTitle}"> <br>
+            <br>
+            <h3>사진 첨부하기</h3>
+            <input type="file" name="boardFile" > <br>
+            <br>
+            <h3>내용</h3>
+            <textarea id="boardContents" cols="30" rows="10" th:text="${boardUpdate.boardContents}"></textarea> <br>
+            <br>
+            <div class="buttons">
+                <input type="button" value="취소" onclick="cancelReq()">
+                <input type="button" value="글수정" onclick="boardUpdate()">
+            </div>
+        </form>
     </div>
 </body>
 <script th:inline="javascript">
-    const boardUpdate = () => {
-        const boardTitle = document.getElementById("boardTitle")
-        const boardContents = document.getElementById("boardContents")
-        const id = [[${board.id}]];
-        $.ajax({
-            type: "post",
-            url: "/board/update",
-            data: {
-                "boardTitle", boardTitle,
-                "boardContents": contents,
-                "boardId": id
-
-
-    }
 
     const cancelReq = () => {
         history.back();

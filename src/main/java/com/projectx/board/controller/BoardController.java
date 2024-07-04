@@ -89,9 +89,8 @@ public class BoardController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
         BoardDTO board = boardService.update(boardDTO);
-        model.addAttribute("board", board);
-        return "boardDetail";
-//        return "redirect:/board/" + boardDTO.getId();
+
+        return "redirect:/board/" + boardDTO.getId();
     }
 
     //게시글 삭제
