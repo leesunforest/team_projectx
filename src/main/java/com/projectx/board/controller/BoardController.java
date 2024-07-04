@@ -1,11 +1,13 @@
 package com.projectx.board.controller;
 
 import com.projectx.board.dto.BoardDTO;
+import com.projectx.board.dto.BoardItemDTO;
 import com.projectx.board.dto.CommentDTO;
 import com.projectx.board.service.BoardService;
 import com.projectx.board.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -13,7 +15,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,26 +26,33 @@ public class BoardController {
     private final BoardService boardService;
     private final CommentService commentService;
 
+    //게시글 작성 페이지로 이동 (게시판->글작성 버튼 클릭시 호출)
     @GetMapping("/save")
     public String saveForm() {
-        return "save";
+        return "boardSave";
     }
 
+    //게시판->글작성->저장시 호출
     @PostMapping("/save")
-    public String save(@ModelAttribute BoardDTO boardDTO) throws IOException {
+    public String save(@ModelAttribute BoardDTO boardDTO, Principal principal) throws IOException {
+        String userId = principal.getName();
+
         System.out.println("boardDTO = " + boardDTO);
-        boardService.save(boardDTO);
-        return "board";
+        boardService.save(boardDTO, userId);
+        return "index";
     }
 
+    //게시판에서 게시글 list 나타내기
     @GetMapping("/")
-    public String findAll(Model model) {
-        // DB에서 전체 게시글 데이터를 가져와서 list.html에 보여준다.
-        List<BoardDTO> boardDTOList = boardService.findAll();
-        model.addAttribute("boardList", boardDTOList);
-        return "list";
+    public String findAll(String searchQuery, Optional<Integer> page, Model model) {
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 6);
+        Page<BoardItemDTO> boardList = boardService.getBoardItemPage(searchQuery, pageable);
+        model.addAttribute("boardList", boardList);
+        //model.addAttribute("maxPage", 5);
+        return "boardList";
     }
 
+    //게시판에서 게시글 클릭시 상세 페이지
     @GetMapping("/{id}")
     public String findById(@PathVariable Long id, Model model,
                            @PageableDefault(page=1) Pageable pageable) {
@@ -59,6 +70,7 @@ public class BoardController {
         return "detail";
     }
 
+    //특정 id를 가진 게시글의 수정 폼을 보여주는 함수 (수정 버튼 클릭시 호출)
     @GetMapping("/update/{id}")
     public String updateForm(@PathVariable Long id, Model model) {
         BoardDTO boardDTO = boardService.findById(id);
@@ -66,6 +78,7 @@ public class BoardController {
         return "update";
     }
 
+    //게시글 수정을 처리하는 함수(수정 폼에서 입력된 데이터를 받아 게시글을 실제로 수정)
     @PostMapping("/update")
     public String update(@ModelAttribute BoardDTO boardDTO, Model model) {
         BoardDTO board = boardService.update(boardDTO);
@@ -74,36 +87,12 @@ public class BoardController {
 //        return "redirect:/board/" + boardDTO.getId();
     }
 
+    //게시글 삭제
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         boardService.delete(id);
         return "redirect:/board/";
     }
-
-    // /board/paging?page=1
-    @GetMapping("/paging")
-    public String paging(@PageableDefault(page = 1) Pageable pageable, Model model) {
-//        pageable.getPageNumber();
-        Page<BoardDTO> boardList = boardService.paging(pageable);
-        int blockLimit = 3;
-        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
-        int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
-
-        // page 갯수 20개
-        // 현재 사용자가 3페이지
-        // 1 2 3
-        // 현재 사용자가 7페이지
-        // 7 8 9
-        // 보여지는 페이지 갯수 3개
-        // 총 페이지 갯수 8개
-
-        model.addAttribute("boardList", boardList);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-        return "paging";
-
-    }
-
 }
 
 

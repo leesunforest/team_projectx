@@ -35,45 +35,21 @@
    - github에 올려놓은 코드를 보시고 어떤 부분이 바뀌는지 잘 살펴봐주세요. 
 
     - board_table(부모) - board_file_table(자식)
-```
-create table board_table
-(
-id             bigint auto_increment primary key,
-created_time   datetime     null,
-updated_time   datetime     null,
-board_contents varchar(500) null,
-board_hits     int          null,
-board_pass     varchar(255) null,
-board_title    varchar(255) null,
-board_writer   varchar(20)  not null,
-file_attached  int          null
-);
 
-create table board_file_table
-(
-id                 bigint auto_increment primary key,
-created_time       datetime     null,
-updated_time       datetime     null,
-original_file_name varchar(255) null,
-stored_file_name   varchar(255) null,
-board_id           bigint       null,
-constraint FKcfxqly70ddd02xbou0jxgh4o3
-    foreign key (board_id) references board_table (id) on delete cascade
-);
-```
+# 진행 상황
+User 엔티티랑 레포지토리 임시로 생성한 채로 개발 중입니다!
 
+(진행된 것)  
+게시판쪽 화면 구현  
+게시판에 게시글 나타내기 구현  
+게시판 -> 글 작성 클릭시 상세페이지 나타내기 구현  
+상세페이지에서 목록으로 이동 및 댓글 게시 기능 구현  
+검색 기능 구현  
 
+(해야할 것)  
+게시글 수정 기능  
+웹 메인 페이지 제작  
+마이페이지 제작  
+마이페이지에서 내가 쓴 게시글 확인  
 
-
-
-
-
-
-
-
-## mysql DataBase 계정 생성 및 권한 부여 
-```
-create database db_codingrecipe;
-create user user_codingrecipe@localhost identified by '1234';
-grant all privileges on db_codingrecipe.* to user_codingrecipe@localhost;
-```
+제대로 된 데이터가 없는 상태로 개발 중이라 테스트가 어려운 상황입니다ㅠㅠ 나중에 코드 통합되면 제 부분에서 오류가 좀 생길 것 같은데 통합 후에 수정하도록 하겠습니다!

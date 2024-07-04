@@ -9,27 +9,26 @@ import jakarta.persistence.*;
 @Entity
 @Getter
 @Setter
-@Table(name = "comment_table")
+@Table(name = "comment")
 public class CommentEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_id")
     private Long id;
 
     @Column(length = 20, nullable = false)
     private String commentWriter;
 
-    @Column
+    @Column(name = "com_contents", length = 500)
     private String commentContents;
 
-    /* Board:Comment = 1:N */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private BoardEntity boardEntity;
 
-
-    public static CommentEntity toSaveEntity(CommentDTO commentDTO, BoardEntity boardEntity) {
+    public static CommentEntity toSaveEntity(CommentDTO commentDTO, BoardEntity boardEntity, String userId) {
         CommentEntity commentEntity = new CommentEntity();
-        commentEntity.setCommentWriter(commentDTO.getCommentWriter());
+        commentEntity.setCommentWriter(userId);
         commentEntity.setCommentContents(commentDTO.getCommentContents());
         commentEntity.setBoardEntity(boardEntity);
         return commentEntity;

@@ -8,16 +8,17 @@ import jakarta.persistence.*;
 @Entity
 @Getter
 @Setter
-@Table(name = "board_file_table")
+@Table(name = "board_file")
 public class BoardFileEntity extends BaseEntity {
     @Id
+    @Column(name = "board_file_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "original_file_name", length = 50)
     private String originalFileName;
 
-    @Column
+    @Column(name = "stored_file_name", length = 50)
     private String storedFileName;
 
     @ManyToOne(fetch = FetchType.LAZY)
