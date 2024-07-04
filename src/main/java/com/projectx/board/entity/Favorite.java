@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity @Getter @Table(name = "Favorite")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -47,8 +48,8 @@ public class Favorite {
         this.favoriteAt = LocalDateTime.now();
     }
 
-    @PrePersist
-    protected void onCreate() {
-        this.favoriteAt = LocalDateTime.now();
+    public String getFormattedFavoriteAt() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return favoriteAt.format(formatter);
     }
 }

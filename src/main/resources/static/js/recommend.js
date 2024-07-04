@@ -124,6 +124,125 @@ function recommendPlaces(midpoint) {
     });
 }
 
+/*
+// userId 값을 세션에서 받아오는 경우
+function recommendPlaces(midpoint) {
+    const ps = new kakao.maps.services.Places();
+    const keywords = ['FD6', 'CE7'];
+    const placeList = document.getElementById('place-list');
+    placeList.innerHTML = '';
+    document.getElementById('left-panel').style.display = 'block';
+    placeMarkers = [];
+
+    keywords.forEach(keyword => {
+        ps.categorySearch(keyword, (data, status) => {
+            if (status === kakao.maps.services.Status.OK) {
+                data.forEach(place => {
+                    const latlng = new kakao.maps.LatLng(place.y, place.x);
+                    const marker = addMarker(latlng, place.place_name, false, true, keyword);
+                    marker.category = keyword;
+                    placeMarkers.push(marker);
+
+                    const li = document.createElement('li');
+                    li.className = 'place-item';
+                    li.innerHTML = `
+                        <div class="place-name">
+                            ${place.place_name}
+                            <button class="save-btn" data-saved="false">Save</button>
+                        </div>
+                        <div class="place-info" style="display: none;">
+                            <p>주소: ${place.road_address_name || place.address_name}</p>
+                            <p>전화번호: ${place.phone || '정보 없음'}</p>
+                            <p><a href="${place.place_url}" target="_blank">카카오맵에서 보기</a></p>
+                        </div>
+                    `;
+
+                    li.dataset.category = keyword;
+                    li.dataset.latlng = JSON.stringify(latlng);
+                    li.dataset.placeId = place.id;
+                    placeList.appendChild(li);
+
+                    const clickHandler = () => {
+                        closeAllPlaceInfos();
+                        displayPlaceInfo(li, place);
+                        map.panTo(latlng);
+                        focusOnListItem(li);
+                        fetchPlaceDetails(place.id, li);
+
+                        if (lastClickedMarker && lastClickedMarker instanceof kakao.maps.Marker) {
+                            lastClickedMarker.setImage(lastClickedMarker.normalIcon);
+                        }
+
+                        if (keyword === 'FD6') {
+                            marker.setImage(new kakao.maps.MarkerImage('/images/enlarged-restaurantmarker.png', new kakao.maps.Size(48, 70)));
+                        } else if (keyword === 'CE7') {
+                            marker.setImage(new kakao.maps.MarkerImage('/images/enlarged-cafemarker.png', new kakao.maps.Size(48, 70)));
+                        }
+
+                        lastClickedMarker = marker;
+                    };
+
+                    kakao.maps.event.addListener(marker, 'click', clickHandler);
+                    li.querySelector('.place-name').addEventListener('click', clickHandler);
+
+                    const saveBtn = li.querySelector('.save-btn');
+                    saveBtn.addEventListener('click', () => {
+                        const saved = saveBtn.dataset.saved === 'true';
+                        saveBtn.dataset.saved = !saved;
+                        saveBtn.textContent = !saved ? 'Unsave' : 'Save';
+                        if (!saved) {
+                            const placeInfo = {
+                                userId: userId, // 주입된 userId 사용
+                                storeName: place.place_name,
+                                storeAddress: place.road_address_name || place.address_name,
+                                storeNumber: place.phone || ''
+                            };
+
+                            fetch('/favorites/save', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(placeInfo)
+                            })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        return response.text().then(text => { throw new Error(text) });
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    console.log(`Saved: ${place.place_name}`);
+                                    saveBtn.dataset.favoriteId = data.favoriteId;
+                                })
+                                .catch(error => {
+                                    console.error('Error saving favorite:', error);
+                                });
+                        } else {
+                            const favoriteId = saveBtn.dataset.favoriteId;
+                            if (favoriteId) {
+                                fetch(`/favorites/delete/${favoriteId}`, {
+                                    method: 'DELETE'
+                                })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            return response.text().then(text => { throw new Error(text) });
+                                        }
+                                        console.log(`Unsaved: ${place.place_name}`);
+                                    })
+                                    .catch(error => {
+                                        console.error('Error unsaving favorite:', error);
+                                    });
+                            } else {
+                                console.error('Favorite ID is not defined');
+                            }
+                        }
+                    });
+                });
+            }
+        }, { location: midpoint, radius: 500 });
+    });
+}
+ */
+
 function fetchPlaceDetails(placeId, listItem) {
     const ps = new kakao.maps.services.Places();
     ps.keywordSearch(placeId, (data, status) => {
