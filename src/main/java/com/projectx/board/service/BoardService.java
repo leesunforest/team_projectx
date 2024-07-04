@@ -4,7 +4,7 @@ import com.projectx.board.dto.BoardDTO;
 import com.projectx.board.dto.BoardItemDTO;
 import com.projectx.board.entity.BoardEntity;
 import com.projectx.board.entity.BoardFileEntity;
-import com.projectx.board.entity.User;
+import com.projectx.board.entity.UserEntity;
 import com.projectx.board.repository.BoardFileRepository;
 import com.projectx.board.repository.BoardRepository;
 import com.projectx.board.repository.UserRepository;
@@ -35,9 +35,8 @@ public class BoardService {
     private final BoardFileRepository boardFileRepository;
     private final UserRepository userRepository;
 
-    public void save(BoardDTO boardDTO, String userId) throws IOException {
+    public void save(BoardDTO boardDTO, UserEntity user) throws IOException {
 
-        User user = userRepository.findById(userId);
 
         // 파일 첨부 여부에 따라 로직 분리
         if (boardDTO.getBoardFile().isEmpty()) {
@@ -99,8 +98,8 @@ public class BoardService {
         }
     }
 
-    public BoardDTO update(BoardDTO boardDTO) throws IOException {
-        User user = userRepository.findById(boardDTO.getUserId());
+    public BoardDTO update(BoardDTO boardDTO, UserEntity user) throws IOException {
+
 
         // 기존 게시글 불러오기
         BoardEntity existingBoard = boardRepository.findById(boardDTO.getId()).orElseThrow(() -> new RuntimeException("게시글 없음"));

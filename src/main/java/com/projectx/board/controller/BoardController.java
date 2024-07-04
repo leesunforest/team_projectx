@@ -3,14 +3,18 @@ package com.projectx.board.controller;
 import com.projectx.board.dto.BoardDTO;
 import com.projectx.board.dto.BoardItemDTO;
 import com.projectx.board.dto.CommentDTO;
+import com.projectx.board.entity.UserEntity;
 import com.projectx.board.service.BoardService;
 import com.projectx.board.service.CommentService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.DelegatingServerHttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,11 +40,18 @@ public class BoardController {
 
     //게시판->글작성->저장시 호출
     @PostMapping("/save")
-    public String save(@ModelAttribute BoardDTO boardDTO, Principal principal) throws IOException {
-        String userId = principal.getName();
+    public String save(@ModelAttribute BoardDTO boardDTO, HttpServletRequest request) throws IOException {
+        HttpSession session = request.getSession(false);
 
-        System.out.println("boardDTO = " + boardDTO);
-        boardService.save(boardDTO, userId);
+        if (session != null) {
+            UserEntity loginUser = (UserEntity) session.getAttribute("user");
+            System.out.println("boardDTO = " + boardDTO);
+            boardService.save(boardDTO, loginUser);
+        }
+        else{
+            return "redirect:/login";
+        }
+
         return "index";
     }
 
@@ -83,12 +94,18 @@ public class BoardController {
 
     //게시글 수정을 처리하는 함수(수정 폼에서 입력된 데이터를 받아 게시글을 실제로 수정)
     @PostMapping("/update")
-    public String update(@ModelAttribute BoardDTO boardDTO, Principal principal, Model model) throws IOException {
+    public String update(@ModelAttribute BoardDTO boardDTO, HttpServletRequest request, Model model) throws IOException {
 
-        if(!boardDTO.getUserId().equals(principal.getName())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            UserEntity loginUser = (UserEntity) session.getAttribute("user");
+            System.out.println("boardDTO = " + boardDTO);
+            boardService.update(boardDTO, loginUser);
         }
-        BoardDTO board = boardService.update(boardDTO);
+        else{
+            return "redirect:/login";
+        }
 
         return "redirect:/board/" + boardDTO.getId();
     }

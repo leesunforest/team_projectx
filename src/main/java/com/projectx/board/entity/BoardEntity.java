@@ -23,7 +23,7 @@ public class BoardEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no")
-    private User user;
+    private UserEntity user;
 
     @Column(length = 20, name = "board_writer", nullable = false) // 크기 20, not null
     private String boardWriter;
@@ -51,9 +51,9 @@ public class BoardEntity extends BaseEntity {
 
     // save.html의 값을 boardDTO로 담음.
     // DTO에 있는 객체를 Entity로 옮겨닮는 작업.
-    public static BoardEntity toSaveEntity(BoardDTO boardDTO, User user) { // static 형식의 메서드로 정의
+    public static BoardEntity toSaveEntity(BoardDTO boardDTO, UserEntity user) { // static 형식의 메서드로 정의
         BoardEntity boardEntity = new BoardEntity();
-        boardEntity.setBoardWriter(user.getId());
+        boardEntity.setBoardWriter(user.getUserId());
         boardEntity.setUser(user);
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
@@ -62,9 +62,9 @@ public class BoardEntity extends BaseEntity {
         return boardEntity;
     }
 
-    public static BoardEntity toSaveFileEntity(BoardDTO boardDTO, User user) {
+    public static BoardEntity toSaveFileEntity(BoardDTO boardDTO, UserEntity user) {
         BoardEntity boardEntity = new BoardEntity();
-        boardEntity.setBoardWriter(user.getId());
+        boardEntity.setBoardWriter(user.getUserId());
         boardEntity.setUser((user));
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
@@ -73,7 +73,7 @@ public class BoardEntity extends BaseEntity {
         return boardEntity;
     }
 
-    public static BoardEntity toUpdateEntity(BoardDTO boardDTO, User user) {
+    public static BoardEntity toUpdateEntity(BoardDTO boardDTO, UserEntity user) {
         BoardEntity boardEntity = new BoardEntity();
         boardEntity.setId(boardDTO.getId());
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
@@ -86,7 +86,7 @@ public class BoardEntity extends BaseEntity {
         return boardEntity;
     }
 
-    public static BoardEntity toUpdateFileEntity(BoardDTO boardDTO, User user) {
+    public static BoardEntity toUpdateFileEntity(BoardDTO boardDTO, UserEntity user) {
         BoardEntity boardEntity = new BoardEntity();
         boardEntity.setId(boardDTO.getId());
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
