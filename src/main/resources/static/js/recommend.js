@@ -23,7 +23,7 @@ function recommendPlaces(midpoint) {
                     li.innerHTML = `
                         <div class="place-name">
                             ${place.place_name}
-                            <button class="save-btn" data-saved="false">Save</button>
+                            ${userId !== 'defaultUser' ? '<button class="save-btn" data-saved="false">Save</button>' : ''}
                         </div>
                         <div class="place-info" style="display: none;">
                             <p>주소: ${place.road_address_name || place.address_name}</p>
@@ -65,222 +65,69 @@ function recommendPlaces(midpoint) {
                     li.querySelector('.place-name').addEventListener('click', clickHandler);
 
                     // 저장 버튼을 클릭시 save와 Unsave 상태를 토글하고, 콘솔에 메시지 출력
-                    const saveBtn = li.querySelector('.save-btn');
-                    saveBtn.addEventListener('click', () => {
-                        const saved = saveBtn.dataset.saved === 'true';
-                        saveBtn.dataset.saved = !saved;
-                        saveBtn.textContent = !saved ? 'Unsave' : 'Save';
-                        if (!saved) {
-                            // Save the place (add to the list, database, etc.)
-                            const placeInfo = {
-                                userId: 'test1', // 실제 사용자 아이디 사용해야 함. userId: userId 로 받도록 하기!!
-                                storeName: place.place_name,
-                                storeAddress: place.road_address_name || place.address_name,
-                                storeNumber: place.phone || ''
-                            };
+                    if (userId !== 'defaultUser') {
+                        // 회원인 경우 (defaultUser : 비회원인 경우 saveBtn이 생성되지 않도록 함)
+                        const saveBtn = li.querySelector('.save-btn');
+                        saveBtn.addEventListener('click', () => {
+                            const saved = saveBtn.dataset.saved === 'true';
+                            saveBtn.dataset.saved = !saved;
+                            saveBtn.textContent = !saved ? 'Unsave' : 'Save';
+                            if (!saved) {
+                                // Save the place (add to the list, database, etc.)
+                                const placeInfo = {
+                                    userId: userId, // map.html 에서 userId 에 대한 session 을 받아옴
+                                    storeName: place.place_name,
+                                    storeAddress: place.road_address_name || place.address_name,
+                                    storeNumber: place.phone || ''
+                                };
 
-                            // 가게 저장 POST
-                            fetch('/mypage/favorites/save', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(placeInfo)
-                            })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        return response.text().then(text => { throw new Error(text) });
-                                    }
-                                    return response.json();
-                                })
-                                .then(data => {
-                                    console.log(`Saved: ${place.place_name}`);
-                                    saveBtn.dataset.favoriteId = data.favoriteId; // 저장된 favoriteId 를 버튼에 저장
-                                })
-                                .catch(error => {
-                                    console.error('Error saving favorite:', error);
-                                });
-                        } else {
-                            // 가게 삭제 DELETE
-                            const favoriteId = saveBtn.dataset.favoriteId; // 저장된 favoriteId 사용
-                            if (favoriteId) {
-                                fetch(`/mypage/favorites/delete/${favoriteId}`, {
-                                    method: 'DELETE'
+                                // 가게 저장 POST
+                                fetch('/mypage/favorites/save', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(placeInfo)
                                 })
                                     .then(response => {
                                         if (!response.ok) {
                                             return response.text().then(text => { throw new Error(text) });
                                         }
-                                        console.log(`Unsaved: ${place.place_name}`);
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        console.log(`Saved: ${place.place_name}`);
+                                        saveBtn.dataset.favoriteId = data.favoriteId; // 저장된 favoriteId 를 버튼에 저장
                                     })
                                     .catch(error => {
-                                        console.error('Error unsaving favorite:', error);
+                                        console.error('Error saving favorite:', error);
                                     });
                             } else {
-                                console.error('favoriteId 를 찾을 수 없습니다.');
+                                // 가게 삭제 DELETE
+                                const favoriteId = saveBtn.dataset.favoriteId; // 저장된 favoriteId 사용
+                                if (favoriteId) {
+                                    fetch(`/mypage/favorites/delete/${favoriteId}`, {
+                                        method: 'DELETE'
+                                    })
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                return response.text().then(text => { throw new Error(text) });
+                                            }
+                                            console.log(`Unsaved: ${place.place_name}`);
+                                        })
+                                        .catch(error => {
+                                            console.error('Error unsaving favorite:', error);
+                                        });
+                                } else {
+                                    console.error('favoriteId 를 찾을 수 없습니다.');
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 });
             }
         }, { location: midpoint, radius: 500 });
     });
 }
 
-function fetchPlaceDetails(placeId, listItem) {
-    const ps = new kakao.maps.services.Places();
-    ps.keywordSearch(placeId, (data, status) => {
-        if (status === kakao.maps.services.Status.OK) {
-            const place = data[0];
-            const infoDiv = listItem.querySelector('.place-info');
-            infoDiv.innerHTML = `
-                <p>주소: ${place.road_address_name || place.address_name}</p>
-                <p>전화번호: ${place.phone || '정보 없음'}</p>
-                <p>카테고리: ${place.category_name}</p>
-                <p>영업시간: ${place.opening_hours || '정보 없음'}</p>
-                <p>리뷰 수: ${place.user_ratings_total || '정보 없음'}</p>
-                <p>평점: ${place.rating || '정보 없음'}</p>
-            `;
-            infoDiv.style.display = 'block';
-        }
-    });
-}
-
-function focusOnListItem(listItem) {
-    document.getElementById('left-panel').scrollTop = listItem.offsetTop;
-}
-
-function displayPlaceInfo(listItem, place) {
-    listItem.querySelector('.place-info').style.display = 'block';
-}
-
-function closeAllPlaceInfos() {
-    document.querySelectorAll('.place-info').forEach(info => {
-        info.style.display = 'none';
-    });
-}
-
-
-/*
-// userId 값을 세션에서 받아오는 경우
-function recommendPlaces(midpoint) {
-    const ps = new kakao.maps.services.Places();
-    const keywords = ['FD6', 'CE7'];
-    const placeList = document.getElementById('place-list');
-    placeList.innerHTML = '';
-    document.getElementById('left-panel').style.display = 'block';
-    placeMarkers = [];
-
-    keywords.forEach(keyword => {
-        ps.categorySearch(keyword, (data, status) => {
-            if (status === kakao.maps.services.Status.OK) {
-                data.forEach(place => {
-                    const latlng = new kakao.maps.LatLng(place.y, place.x);
-                    const marker = addMarker(latlng, place.place_name, false, true, keyword);
-                    marker.category = keyword;
-                    placeMarkers.push(marker);
-
-                    const li = document.createElement('li');
-                    li.className = 'place-item';
-                    li.innerHTML = `
-                        <div class="place-name">
-                            ${place.place_name}
-                            <button class="save-btn" data-saved="false">Save</button>
-                        </div>
-                        <div class="place-info" style="display: none;">
-                            <p>주소: ${place.road_address_name || place.address_name}</p>
-                            <p>전화번호: ${place.phone || '정보 없음'}</p>
-                            <p><a href="${place.place_url}" target="_blank">카카오맵에서 보기</a></p>
-                        </div>
-                    `;
-
-                    li.dataset.category = keyword;
-                    li.dataset.latlng = JSON.stringify(latlng);
-                    li.dataset.placeId = place.id;
-                    placeList.appendChild(li);
-
-                    const clickHandler = () => {
-                        closeAllPlaceInfos();
-                        displayPlaceInfo(li, place);
-                        map.panTo(latlng);
-                        focusOnListItem(li);
-                        fetchPlaceDetails(place.id, li);
-
-                        if (lastClickedMarker && lastClickedMarker instanceof kakao.maps.Marker) {
-                            lastClickedMarker.setImage(lastClickedMarker.normalIcon);
-                        }
-
-                        if (keyword === 'FD6') {
-                            marker.setImage(new kakao.maps.MarkerImage('/images/enlarged-restaurantmarker.png', new kakao.maps.Size(48, 70)));
-                        } else if (keyword === 'CE7') {
-                            marker.setImage(new kakao.maps.MarkerImage('/images/enlarged-cafemarker.png', new kakao.maps.Size(48, 70)));
-                        }
-
-                        lastClickedMarker = marker;
-                    };
-
-                    kakao.maps.event.addListener(marker, 'click', clickHandler);
-                    li.querySelector('.place-name').addEventListener('click', clickHandler);
-
-                    // 저장 버튼 생성
-                    const saveBtn = li.querySelector('.save-btn');
-                    saveBtn.addEventListener('click', () => {
-                        const saved = saveBtn.dataset.saved === 'true';
-                        saveBtn.dataset.saved = !saved;
-                        saveBtn.textContent = !saved ? 'Unsave' : 'Save';
-
-                        if (!saved) {
-                            const placeInfo = {
-                                userId: userId, // 주입된 userId 사용
-                                storeName: place.place_name,
-                                storeAddress: place.road_address_name || place.address_name,
-                                storeNumber: place.phone || ''
-                            };
-
-                            // 가게 저장 POST
-                            fetch('/mypage/favorites/save', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(placeInfo)
-                            })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        return response.text().then(text => { throw new Error(text) });
-                                    }
-                                    return response.json();
-                                })
-                                .then(data => {
-                                    console.log(`Saved: ${place.place_name}`);
-                                    saveBtn.dataset.favoriteId = data.favoriteId;
-                                })
-                                .catch(error => {
-                                    console.error('Error saving favorite:', error);
-                                });
-                        } else {
-                        // 가게 삭제 DELTE
-                            const favoriteId = saveBtn.dataset.favoriteId;
-                            if (favoriteId) {
-                                fetch(`/mypage/favorites/delete/${favoriteId}`, {
-                                    method: 'DELETE'
-                                })
-                                    .then(response => {
-                                        if (!response.ok) {
-                                            return response.text().then(text => { throw new Error(text) });
-                                        }
-                                        console.log(`Unsaved: ${place.place_name}`);
-                                    })
-                                    .catch(error => {
-                                        console.error('Error unsaving favorite:', error);
-                                    });
-                            } else {
-                                console.error('Favorite ID is not defined');
-                            }
-                        }
-                    });
-                });
-            }
-        }, { location: midpoint, radius: 500 });
-    });
-}
- */
 
 function fetchPlaceDetails(placeId, listItem) {
     const ps = new kakao.maps.services.Places();

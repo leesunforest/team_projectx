@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,13 +19,18 @@
     <script defer src="/js/filter.js"></script>
     <script defer src="/js/search.js"></script>
     <script defer src="/js/category.js"></script>
+    <script>
+        // userId 세션 값을 받아옴. 회원이 아니라면 defaultUser 값을 넘김
+        const userId = `[[${userId}]]`;
+        console.log("userId:", userId);  // 디버깅을 위한 콘솔 로그 추가
+    </script>
 </head>
 <body>
 <header>
     <div class="top-bar">
-        <button onclick="location.href='../../board/html/board.html'">게시판</button>
+        <button onclick="location.href='/board'">게시판</button>
         <div class="auth-buttons">
-            <button onclick="location.href='../../member_management/html/login.html'">Login/Register</button>
+            <button onclick="location.href='/login'">로그인</button>
         </div>
     </div>
 </header>
@@ -33,7 +38,6 @@
     <div id="map">
         <div id="top-left-buttons">
             <button id="myPageButton" onclick="location.href='/mypage'">마이페이지</button>
-
             <button id="groupButton">그룹 참여</button>
         </div>
     </div>
@@ -80,7 +84,6 @@
         <button id="current-location-button" onclick="useCurrentLocation()">현재 위치 사용</button>
     </div>
 </div>
-
 
 <script>
     function findMidpoint() {
