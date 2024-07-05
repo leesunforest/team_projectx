@@ -24,11 +24,16 @@ public class UserController {
         try {
             userService.signup(requestDTO);
             model.addAttribute("message", "회원가입 성공");
-            return "redirect:/login?message=회원가입 성공";
+            return "redirect:/login";
         } catch (IllegalArgumentException e) {
             model.addAttribute("message", e.getMessage());
             return "signup";
         }
+    }
+
+    @GetMapping("/signup")
+    public String signupPage() {
+        return "signup";
     }
 
     @GetMapping("/login")

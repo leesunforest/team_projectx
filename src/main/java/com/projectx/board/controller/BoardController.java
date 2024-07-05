@@ -1,7 +1,9 @@
 package com.projectx.board.controller;
 
 import com.projectx.board.dto.BoardDTO;
+import com.projectx.board.dto.CommentDTO;
 import com.projectx.board.service.BoardService;
+import com.projectx.board.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequestMapping("/board")
 public class BoardController {
     private final BoardService boardService;
+    private final CommentService commentService;
 
     @GetMapping("/save")
     public String saveForm() {
@@ -26,12 +29,14 @@ public class BoardController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute BoardDTO boardDTO) throws IOException {
+        System.out.println("boardDTO = " + boardDTO);
         boardService.save(boardDTO);
-        return "redirect:/board/list";
+        return "index";
     }
 
     @GetMapping("/list")
-    public String boardList(Model model) {
+    public String findAll(Model model) {
+        // DB에서 전체 게시글 데이터를 가져와서 list.html에 보여준다.
         List<BoardDTO> boardDTOList = boardService.findAll();
         model.addAttribute("boardList", boardDTOList);
         return "boardList";
@@ -39,12 +44,19 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public String findById(@PathVariable Long id, Model model,
-                           @PageableDefault(page = 1) Pageable pageable) {
+                           @PageableDefault(page=1) Pageable pageable) {
+        /*
+            해당 게시글의 조회수를 하나 올리고
+            게시글 데이터를 가져와서 detail.html에 출력
+         */
         boardService.updateHits(id);
         BoardDTO boardDTO = boardService.findById(id);
+        /* 댓글 목록 가져오기 */
+        List<CommentDTO> commentDTOList = commentService.findAll(id);
+        model.addAttribute("commentList", commentDTOList);
         model.addAttribute("board", boardDTO);
         model.addAttribute("page", pageable.getPageNumber());
-        return "detail";
+        return "boardDetail";
     }
 
     @GetMapping("/update/{id}")
@@ -58,7 +70,8 @@ public class BoardController {
     public String update(@ModelAttribute BoardDTO boardDTO, Model model) {
         BoardDTO board = boardService.update(boardDTO);
         model.addAttribute("board", board);
-        return "detail";
+        return "boardDetail";
+//        return "redirect:/board/" + boardDTO.getId();
     }
 
     @GetMapping("/delete/{id}")
@@ -67,11 +80,13 @@ public class BoardController {
         return "redirect:/board/list";
     }
 
+    // /board/paging?page=1
     @GetMapping("/paging")
     public String paging(@PageableDefault(page = 1) Pageable pageable, Model model) {
+//        pageable.getPageNumber();
         Page<BoardDTO> boardList = boardService.paging(pageable);
         int blockLimit = 3;
-        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
+        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
         int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
         model.addAttribute("boardList", boardList);
         model.addAttribute("startPage", startPage);
