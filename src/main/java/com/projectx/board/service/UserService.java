@@ -17,30 +17,28 @@ import java.util.Map;
 public class UserService {
     private final UserRepository userRepository;
 
-    public Map<String, String> signup(UserSignupDTO requestDTO) {
+    public void signup(UserSignupDTO requestDTO) {
         UserEntity findUser = userRepository.findByUserId(requestDTO.getUserId());
         if (findUser != null) {
             throw new IllegalArgumentException("중복된 아이디가 존재합니다.");
         }
         UserEntity newUser = requestDTO.toUserEntity();
         userRepository.save(newUser);
-        return Collections.singletonMap("message", "회원가입 성공");
     }
 
-    public Map<String, String> login(UserLoginDTO requestDTO, HttpServletRequest httpRequest) {
+    public void login(UserLoginDTO requestDTO, HttpServletRequest httpRequest) {
         UserEntity loginUser = userRepository.findByUserIdAndUserPw(requestDTO.getUserId(), requestDTO.getUserPw());
         if (loginUser == null) {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다.");
         }
-        httpRequest.getSession().setAttribute("user", loginUser);
-        return Collections.singletonMap("message", "로그인 성공");
+        HttpSession session = httpRequest.getSession();
+        session.setAttribute("userId", loginUser.getUserId());
     }
 
-    public Map<String, String> logout(HttpServletRequest request) {
+    public void logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-        return Collections.singletonMap("message", "로그아웃 성공");
     }
 }
