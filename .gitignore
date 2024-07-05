@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+C:\dev\java3\src\main\resources\application.yml
+
+### 추가되면 안 되는 파일 모음 ###
+/src/main/resources/static/js/apikey.js
+/src/main/java/com/projectx/board/config/LoginUserArgumentResolver.java
+/src/main/java/com/projectx/board/config/LoginUser.java
