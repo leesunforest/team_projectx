@@ -1,9 +1,7 @@
 package com.projectx.board.controller;
 
 import com.projectx.board.dto.BoardDTO;
-import com.projectx.board.dto.CommentDTO;
 import com.projectx.board.service.BoardService;
-import com.projectx.board.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +18,6 @@ import java.util.List;
 @RequestMapping("/board")
 public class BoardController {
     private final BoardService boardService;
-    private final CommentService commentService;
 
     @GetMapping("/save")
     public String saveForm() {
@@ -30,22 +27,21 @@ public class BoardController {
     @PostMapping("/save")
     public String save(@ModelAttribute BoardDTO boardDTO) throws IOException {
         boardService.save(boardDTO);
-        return "index";
+        return "redirect:/board/list";
     }
 
-    @GetMapping("/boardList")
-    public String findAll(Model model) {
+    @GetMapping("/list")
+    public String boardList(Model model) {
         List<BoardDTO> boardDTOList = boardService.findAll();
         model.addAttribute("boardList", boardDTOList);
         return "boardList";
     }
 
     @GetMapping("/{id}")
-    public String findById(@PathVariable Long id, Model model, @PageableDefault(page=1) Pageable pageable) {
+    public String findById(@PathVariable Long id, Model model,
+                           @PageableDefault(page = 1) Pageable pageable) {
         boardService.updateHits(id);
         BoardDTO boardDTO = boardService.findById(id);
-        List<CommentDTO> commentDTOList = commentService.findAll(id);
-        model.addAttribute("commentList", commentDTOList);
         model.addAttribute("board", boardDTO);
         model.addAttribute("page", pageable.getPageNumber());
         return "detail";
@@ -68,16 +64,15 @@ public class BoardController {
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         boardService.delete(id);
-        return "redirect:/board/boardList";
+        return "redirect:/board/list";
     }
 
     @GetMapping("/paging")
     public String paging(@PageableDefault(page = 1) Pageable pageable, Model model) {
         Page<BoardDTO> boardList = boardService.paging(pageable);
         int blockLimit = 3;
-        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
+        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
         int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
-
         model.addAttribute("boardList", boardList);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);

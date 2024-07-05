@@ -8,20 +8,19 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// DB의 테이블 역할을 하는 클래스
 @Entity
 @Getter
 @Setter
 @Table(name = "board_table")
 public class BoardEntity extends BaseEntity {
-    @Id // pk 컬럼 지정. 필수
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 20, nullable = false) // 크기 20, not null
+    @Column(length = 20, nullable = false)
     private String boardWriter;
 
-    @Column // 크기 255, null 가능
+    @Column
     private String boardPass;
 
     @Column
@@ -34,7 +33,7 @@ public class BoardEntity extends BaseEntity {
     private Integer boardHits;
 
     @Column
-    private Integer fileAttached; // 1 or 0
+    private Integer fileAttached = 0; // 기본 값을 0으로 설정
 
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
@@ -42,16 +41,14 @@ public class BoardEntity extends BaseEntity {
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CommentEntity> commentEntityList = new ArrayList<>();
 
-    // save.html의 값을 boardDTO로 담음.
-    // DTO에 있는 객체를 Entity로 옮겨닮는 작업.
-    public static BoardEntity toSaveEntity(BoardDTO boardDTO) { // static 형식의 메서드로 정의
+    public static BoardEntity toSaveEntity(BoardDTO boardDTO) {
         BoardEntity boardEntity = new BoardEntity();
         boardEntity.setBoardWriter(boardDTO.getBoardWriter());
         boardEntity.setBoardPass(boardDTO.getBoardPass());
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
         boardEntity.setBoardHits(0);
-        boardEntity.setFileAttached(0); // 파일 없음.
+        boardEntity.setFileAttached(0);
         return boardEntity;
     }
 
@@ -73,17 +70,7 @@ public class BoardEntity extends BaseEntity {
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
         boardEntity.setBoardHits(0);
-        boardEntity.setFileAttached(1); // 파일 있음.
+        boardEntity.setFileAttached(1);
         return boardEntity;
     }
 }
-
-
-
-
-
-
-
-
-
-

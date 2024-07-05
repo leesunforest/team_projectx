@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             display: flex;
@@ -11,7 +11,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Noto Sans KR', sans-serif;
             background-color: #f0f0f0;
         }
         .container {
@@ -63,6 +63,7 @@
 </head>
 <body>
 <div class="container">
+    <h2>로그인</h2>
     <form action="/login" method="post">
         <div class="form-group">
             <input type="text" id="userId" name="userId" placeholder="아이디" required>
@@ -73,7 +74,7 @@
         <button type="submit">로그인</button>
     </form>
     <div class="links">
-        <a href="/find-id">아이디 찾기</a> / <a href="/find-pw">비밀번호 찾기</a> / <a href="/signup">회원가입</a>
+        <p>계정이 없으신가요? <a href="/signup">회원가입</a></p>
     </div>
 </div>
 </body>
