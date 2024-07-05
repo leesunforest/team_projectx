@@ -2,7 +2,7 @@
 server:
   port: 8082
 
-# database 연동 설정
+# 데이터베이스 연동 설정
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

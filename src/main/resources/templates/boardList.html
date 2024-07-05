@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 목록</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            background-color: white;
+            padding: 40px 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            margin-top: 20px;
+        }
+        .post-list {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f8f8;
+        }
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 12px;
+            background-color: #616161;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .pagination a:hover {
+            background-color: #4a4a4a;
+        }
+        .write-button {
+            padding: 8px 16px;
+            background-color: #616161;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        .write-button:hover {
+            background-color: #4a4a4a;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <main>
+        <div class="post-list">
+            <table>
+                <thead>
+                <tr>
+                    <th>글번호</th>
+                    <th>글이름</th>
+                    <th>작성자</th>
+                    <th>조회수</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="board : ${boardList}">
+                    <td th:text="${board.id}"></td>
+                    <td><a th:href="@{|/board/${board.id}|}" th:text="${board.boardTitle}"></a></td>
+                    <td th:text="${board.boardWriter}"></td>
+                    <td th:text="${board.boardHits}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination-container">
+            <div class="pagination">
+                <a th:href="@{/board/paging(page=1)}">First</a>
+                <a th:href="@{/board/paging(page=${boardList.number})}">Prev</a>
+                <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
+                    <a th:if="${page != boardList.number + 1}" th:href="@{/board/paging(page=${page})}" th:text="${page}"></a>
+                    <span th:if="${page == boardList.number + 1}" th:text="${page}"></span>
+                </span>
+                <a th:href="@{/board/paging(page=${boardList.number + 2})}">Next</a>
+                <a th:href="@{/board/paging(page=${boardList.totalPages})}">Last</a>
+            </div>
+            <a href="/board/save" class="write-button">글 작성</a>
+        </div>
+    </main>
+    <footer>
+        <p>© 2024 게시판 프로젝트</p>
+    </footer>
+</div>
+<script>
+    const listReq = (page) => {
+        location.href = `/board/?page=${page}`;
+    }
+</script>
+</body>
+</html>
