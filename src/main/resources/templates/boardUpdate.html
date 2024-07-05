@@ -1,72 +1,90 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>update</title>
+    <title>게시글 수정</title>
     <style>
-        div.container{
-          margin: 0 auto;
-          width: 800px;
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
         }
-
-        div.container input[type="text"],
-        div.container input[type="file"],
-        div.container textarea {
-          width: calc(100% - 24px); /* container 너비에서 패딩값을 뺀 크기로 설정 */
-          margin-bottom: 10px; /* 입력 필드 간 간격 설정 */
-          padding: 10px; /* 내부 여백 추가 */
-          border: none;
-          border-radius: 4px;
-          box-sizing: border-box; /* 패딩, 테두리 포함한 전체 크기 설정 */
-          background-color: #EEEEEE;
+        .container {
+            background-color: white;
+            padding: 40px 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            box-sizing: border-box;
         }
-
-        div.container textarea {
-          height: 150px; /* textarea 높이 설정 */
-          resize: vertical; /* 수직 리사이즈만 허용 */
+        .form-group {
+            margin-bottom: 20px;
         }
-
-        div.container .buttons {
-          margin-top: 10px; /* 버튼 위 간격 설정 */
-          text-align: center; /* 내부 요소를 가운데 정렬 */
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
-
-        div.container .buttons input[type="button"] {
-          width: 100px;
-          height: 40px;
-          padding: 10px 20px; /* 버튼 내부 여백 설정 */
-          background-color: #999999; /* 배경색 설정 */
-          color: white; /* 텍스트 색상 설정 */
-          border: none; /* 테두리 제거 */
-          cursor: pointer; /* 마우스 커서 포인터로 변경 */
-          border-radius: 4px; /* 모서리 둥글게 설정 */
-          margin: 0 25px; /* 버튼 사이 간격 설정 */
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #000000;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #444444;
+        }
+        .links {
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <form action="/board/update" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="id" th:value="${boardUpdate.id}">
-            <h3>제목</h3>
-            <input type="text" name="boardTitle" th:value="${boardUpdate.boardTitle}"> <br>
-            <br>
-            <h3>사진 첨부하기</h3>
-            <input type="file" name="boardFile" > <br>
-            <br>
-            <h3>내용</h3>
-            <textarea id="boardContents" cols="30" rows="10" th:text="${boardUpdate.boardContents}"></textarea> <br>
-            <br>
-            <div class="buttons">
-                <input type="button" value="취소" onclick="cancelReq()">
-                <input type="button" value="글수정" onclick="boardUpdate()">
-            </div>
-        </form>
-    </div>
-</body>
+<div class="container">
+    <form action="/board/update" method="post" name="updateForm">
+        <input type="hidden" name="id" th:value="${boardUpdate.id}">
+        <div class="form-group">
+            <input type="text" name="boardWriter" th:value="${boardUpdate.boardWriter}" readonly>
+        </div>
+        <div class="form-group">
+            <input type="password" name="boardPass" id="boardPass" placeholder="비밀번호">
+        </div>
+        <div class="form-group">
+            <input type="text" name="boardTitle" th:value="${boardUpdate.boardTitle}" placeholder="제목">
+        </div>
+        <div class="form-group">
+            <textarea name="boardContents" cols="30" rows="10" th:text="${boardUpdate.boardContents}" placeholder="내용"></textarea>
+        </div>
+        <input type="hidden" name="boardHits" th:value="${boardUpdate.boardHits}">
+        <button type="button" onclick="boardUpdate()">글수정</button>
+    </form>
+</div>
 <script th:inline="javascript">
-
-    const cancelReq = () => {
-        history.back();
+    const boardUpdate = () => {
+        const pass = [[${boardUpdate.boardPass}]];
+        const inputPass = document.getElementById("boardPass").value;
+        if (pass === inputPass) {
+            document.updateForm.submit();
+        } else {
+            alert("비밀번호가 일치하지 않습니다!");
+        }
     }
 </script>
+</body>
+</html>

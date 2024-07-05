@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입</title>
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             display: flex;
@@ -11,7 +12,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Noto Sans KR', sans-serif;
             background-color: #f0f0f0;
         }
         .container {
@@ -19,7 +20,7 @@
             padding: 40px 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 400px; /* 너비를 400px로 증가 */
+            width: 400px;
             box-sizing: border-box;
         }
         .form-group {
@@ -50,15 +51,11 @@
             text-align: center;
             margin-top: 20px;
         }
-        .links p {
-            font-size: 0.7em; /* 폰트 크기를 줄임 */
-            color: #616161; /* 텍스트 색상 변경 */
-        }
         .links a {
-            color: #000000; /* 로그인 링크 색상 변경 */
+            color: #616161;
             text-decoration: none;
             margin: 0 10px;
-            font-size: 1em; /* 폰트 크기를 줄임 */
+            font-size: 0.9em;
         }
         .links a:hover {
             text-decoration: underline;
@@ -67,6 +64,7 @@
 </head>
 <body>
 <div class="container">
+    <h2>회원가입</h2>
     <form action="/signup" method="post">
         <div class="form-group">
             <input type="text" id="userId" name="userId" placeholder="아이디" required>

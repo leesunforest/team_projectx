@@ -1,90 +1,62 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>boardList</title>
-    <script src="https://kit.fontawesome.com/a38ef865ef.js" crossorigin="anonymous"></script>
-    <!-- CSS only -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-    <!-- JS, Popper.js, and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <style>
-        div.container{
-          margin: 0 auto;
-          width: 960px;
-        }
-
-        .board-list{
-            margin-top: 20px;
-        }
-
-        .board-item{
-            width: 90%;
-            margin: 10px auto;
-            padding: 10px;
-            background-color: #f9f9f9;
-        }
-
-        .writeButton{
-            float: right;
-        }
-    </style>
+    <title>중간에서 만나</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/boardLIst.css">
 </head>
 <body>
-    <div class="container">
-        <h1>'중간에서 만나' 게시판</h1>
-        <form th:action="@{/board}" method="get">
-            <input name="searchQuery" type="search" placeholder="검색어 입력" aria-label="Search">
-            <button type="submit">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-        </form>
-        <input type="hidden" name="searchQuery" th:value="${searchQuery}">
-        <button class="writeButton" onclick="writeReq()">
-            <i class="fa-solid fa-pen"></i>
-        </button>
-        <hr>
-        <th:block th:each="board, status: ${boardList.getContent()}">
-            <div class="board-item">
-                <a th:href="@{'/board/' + ${board.id}}" th:text="${board.boardTitle}"></a>
-            </div>
-        </th:block>
+<header>
+    <h1><a href="/">중간에서 만나</a></h1>
+    <div class="buttons">
+        <span th:if="${session.userId}"><b th:text="${session.userId}"></b>님</span>
+        <a th:if="${session.userId}" href="/logout">로그아웃</a>
+        <a th:if="${session.userId == null}" href="/login">로그인</a>
+    </div>
+</header>
+<div class="container">
+    <main>
+        <div class="post-list">
+            <table>
+                <thead>
+                <tr>
+                    <th>글번호</th>
+                    <th>글제목</th>
+                    <th>작성자</th>
+                    <th>조회수</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 게시물 목록이 여기에 표시됩니다. -->
+                <tr th:each="board : ${boardList}">
+                    <td th:text="${board.id}">1</td>
+                    <td><a th:href="@{/board/{id}(id=${board.id})}" th:text="${board.boardTitle}">제목</a></td>
+                    <td th:text="${board.boardWriter}">작성자</td>
+                    <td th:text="${board.boardHits}">조회수</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-
-    <div th:with="start=${(boardList.number/maxPage)*maxPage + 1}, end=(${(boardList.totalPages == 0) ? 1 : (start + (maxPage - 1) < boardList.totalPages ? start + (maxPage - 1) : boardList.totalPages)})" >
-        <ul class="pagination justify-content-center">
-
-            <li class="page-item" th:classappend="${boardList.number eq 0}?'disabled':''">
-                <a th:href="@{'/' + '?searchQuery=' + ${searchQuery} + '&page=' + ${boardList.number-1}}" aria-label='Previous' class="page-link">
-                    <span aria-hidden='true'>이전</span>
-                </a>
-            </li>
-
-            <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${boardList.number eq page-1}?'active':''">
-                <a th:href="@{'/' +'?searchQuery=' + ${searchQuery} + '&page=' + ${page-1}}" th:inline="text" class="page-link">[[${page}]]</a>
-            </li>
-
-            <li class="page-item" th:classappend="${boardList.number+1 ge boardList.totalPages}?'disabled':''">
-                <a th:href="@{'/' +'?searchQuery=' + ${searchQuery} + '&page=' + ${boardList.number+1}}" aria-label='Next' class="page-link">
-                    <span aria-hidden='true'>다음</span>
-                </a>
-            </li>
-
-        </ul>
-    </div>
-    </div>
-
-
-
-</body>
-<script th:inline="javascript">
-
-    const writeReq = () => {
-        location.href = "/board/save";
+        <div class="pagination-container">
+            <div class="pagination">
+                <a href="#" onclick="listReq(1)">1</a>
+                <a href="#" onclick="listReq(2)">2</a>
+                <a href="#" onclick="listReq(3)">3</a>
+                <a href="#" onclick="listReq(4)">4</a>
+                <a href="#" onclick="listReq(5)">5</a>
+            </div>
+            <a href="/board/save" class="write-button">글 작성</a>
+        </div>
+    </main>
+</div>
+<footer>
+    <p>© PROJECT-X JAVA TEAM 3</p>
+</footer>
+<script>
+    const listReq = (page) => {
+        location.href = `/board/paging?page=${page}`;
     }
 </script>
+</body>
 </html>

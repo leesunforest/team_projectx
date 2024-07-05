@@ -1,31 +1,30 @@
 package com.projectx.board.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Getter
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "users")
+@Getter
+@NoArgsConstructor
 public class UserEntity {
-    @Id // pk 컬럼 지정. 필수
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userNo;
 
-    @Column(name = "user_id", length = 15, nullable = false)
+    @Column(nullable = false, length = 50)
     private String userId;
 
-    @Column(name = "user_pw", length = 20, nullable = false)
+    @Column(nullable = false, length = 100)
     private String userPw;
 
-    @Column(name = "user_email", length = 50, nullable = false)
+    @Column(nullable = false, length = 100)
     private String userEmail;
 
-    @Column(name = "user_join", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime userJoin;
 
     public UserEntity(String userId, String userPw, String userEmail, LocalDateTime userJoin) {

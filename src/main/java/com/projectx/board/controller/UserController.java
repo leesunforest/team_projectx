@@ -2,44 +2,57 @@ package com.projectx.board.controller;
 
 import com.projectx.board.dto.UserLoginDTO;
 import com.projectx.board.dto.UserSignupDTO;
-import com.projectx.board.repository.UserRepository;
 import com.projectx.board.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
-@RestController
+@Controller
 public class UserController {
+
 
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Map<String, String>> signup(@RequestBody UserSignupDTO requestDTO) {
-        Map<String, String> response = userService.signup(requestDTO);
+    public String signup(@ModelAttribute UserSignupDTO requestDTO, Model model) {
+        try {
+            userService.signup(requestDTO);
+            model.addAttribute("message", "회원가입 성공");
+            return "redirect:/login";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("message", e.getMessage());
+            return "signup";
+        }
+    }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    @GetMapping("/signup")
+    public String signupPage() {
+        return "signup";
+    }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody UserLoginDTO requestDTO, HttpServletRequest request) {
-        Map<String, String> response = userService.login(requestDTO, request);
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+    public String login(@ModelAttribute UserLoginDTO userLoginDTO, HttpServletRequest request, Model model) {
+        String userId = userService.login(userLoginDTO, request);
+        return "redirect:/";
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<Map<String, String>> logout(HttpServletRequest request) {
-        Map<String, String> response = userService.logout(request);
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return "redirect:/";
     }
 }
