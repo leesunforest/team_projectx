@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 수정</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 40px 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            box-sizing: border-box;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #000000;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #444444;
+        }
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <form action="/board/update" method="post" name="updateForm">
+        <input type="hidden" name="id" th:value="${boardUpdate.id}">
+        <div class="form-group">
+            <input type="text" name="boardWriter" th:value="${boardUpdate.boardWriter}" readonly>
+        </div>
+        <div class="form-group">
+            <input type="password" name="boardPass" id="boardPass" placeholder="비밀번호">
+        </div>
+        <div class="form-group">
+            <input type="text" name="boardTitle" th:value="${boardUpdate.boardTitle}" placeholder="제목">
+        </div>
+        <div class="form-group">
+            <textarea name="boardContents" cols="30" rows="10" th:text="${boardUpdate.boardContents}" placeholder="내용"></textarea>
+        </div>
+        <input type="hidden" name="boardHits" th:value="${boardUpdate.boardHits}">
+        <button type="button" onclick="boardUpdate()">글수정</button>
+    </form>
+</div>
+<script th:inline="javascript">
+    const boardUpdate = () => {
+        const pass = [[${boardUpdate.boardPass}]];
+        const inputPass = document.getElementById("boardPass").value;
+        if (pass === inputPass) {
+            document.updateForm.submit();
+        } else {
+            alert("비밀번호가 일치하지 않습니다!");
+        }
+    }
+</script>
+</body>
+</html>

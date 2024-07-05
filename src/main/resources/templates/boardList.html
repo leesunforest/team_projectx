@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>중간에서 만나</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f0f0f0;
+        }
+        header {
+            width: 100%;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        header h1 a {
+            text-decoration: none;
+            color: #000;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .buttons a {
+            text-decoration: none;
+            color: #ffffff;
+            background-color: #000000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .buttons a:hover {
+            background-color: #444444;
+        }
+        .buttons span {
+            color: #000000;
+            font-weight: bold;
+        }
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            background-color: white;
+            padding: 40px 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            margin: 20px auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f8f8;
+        }
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 12px;
+            background-color: #616161;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .pagination a:hover {
+            background-color: #4a4a4a;
+        }
+        .write-button {
+            padding: 8px 16px;
+            background-color: #616161;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        .write-button:hover {
+            background-color: #4a4a4a;
+        }
+        footer {
+            text-align: center;
+            margin-top: auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1><a href="/">중간에서 만나</a></h1>
+    <div class="buttons">
+        <span th:if="${session.userId}">안녕하세요, <b th:text="${session.userId}"></b>님</span>
+        <a th:if="${session.userId}" href="/logout">로그아웃</a>
+        <a th:if="${session.userId == null}" href="/login">로그인</a>
+    </div>
+</header>
+<div class="container">
+    <main>
+        <div class="post-list">
+            <table>
+                <thead>
+                <tr>
+                    <th>글번호</th>
+                    <th>글제목</th>
+                    <th>작성자</th>
+                    <th>조회수</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 게시물 목록이 여기에 표시됩니다. -->
+                <tr th:each="board : ${boardList}">
+                    <td th:text="${board.id}">1</td>
+                    <td th:text="${board.boardTitle}">제목</td>
+                    <td th:text="${board.boardWriter}">작성자</td>
+                    <td th:text="${board.boardHits}">조회수</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination-container">
+            <div class="pagination">
+                <a href="#" onclick="listReq(1)">1</a>
+                <a href="#" onclick="listReq(2)">2</a>
+                <a href="#" onclick="listReq(3)">3</a>
+                <a href="#" onclick="listReq(4)">4</a>
+                <a href="#" onclick="listReq(5)">5</a>
+            </div>
+            <a href="/board/save" class="write-button">글 작성</a>
+        </div>
+    </main>
+</div>
+<footer>
+    <p>© PROJECT-X JAVA TEAM 3</p>
+</footer>
+<script>
+    const listReq = (page) => {
+        location.href = `/board/paging?page=${page}`;
+    }
+</script>
+</body>
+</html>

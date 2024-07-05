@@ -1,31 +1,52 @@
 package com.projectx.board.service;
-/*
-임의로 작성된 UserService
- */
 
-import com.projectx.board.entity.User;
+import com.projectx.board.dto.UserLoginDTO;
+import com.projectx.board.dto.UserSignupDTO;
+import com.projectx.board.entity.UserEntity;
 import com.projectx.board.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service @RequiredArgsConstructor
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Map;
+
+@RequiredArgsConstructor
+@Service
 public class UserService {
-    
+
     private final UserRepository userRepository;
-    
-    // 사용자 생성 메서드
-    public User createUser(String userId, String userPw, String userEmail) {
-        User user = User.builder()
-                .userId(userId)
-                .userPw(userPw)
-                .userEmail(userEmail)
-                .build();
-        // 생성된 사용자 정보를 DB에 저장
-        return userRepository.save(user); 
+
+    public void signup(UserSignupDTO requestDTO) {
+        // 아이디가 중복인지 체크
+        UserEntity findUser = userRepository.findByUserId(requestDTO.getUserId());
+
+        // 아이디가 중복이라면
+        if (findUser != null) {
+            throw new IllegalArgumentException("중복된 아이디가 존재합니다.");
+        }
+        // 정상적인 회원가입이라면 디비에 저장
+        UserEntity newUser = new UserEntity(requestDTO.getUserId(), requestDTO.getUserPw(), requestDTO.getUserEmail(), LocalDateTime.now());
+        userRepository.save(newUser);
     }
 
-    // 사용자 아이디로 사용자 조회 메서드
-    public User findUserByUserId(String userId) {
-        return userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public String login(UserLoginDTO requestDTO, HttpServletRequest httpRequest) {
+        UserEntity loginUser = userRepository.findByUserIdAndUserPw(requestDTO.getUserId(), requestDTO.getUserPw());
+        if (loginUser == null) {
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다.");
+        }
+        HttpSession session = httpRequest.getSession();
+        session.setAttribute("userId", loginUser.getUserId());
+
+        return loginUser.getUserId();
+    }
+
+    public void logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
     }
 }
