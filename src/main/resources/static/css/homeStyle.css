@@ -1,0 +1,43 @@
+/* homeStyle.css */
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f0f0f0;
+}
+
+body *:lang(en) {
+    font-family: 'Margarine', cursive;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 100px;
+}
+
+main a {
+    text-decoration: none;
+    color: #000000;
+    font-size: 3em;
+    font-weight: bold;
+}
+
+main a:lang(en) {
+    font-family: 'Margarine', cursive;
+}
+
+footer {
+    position: absolute;
+    bottom: 20px;
+    text-align: center;
+    width: 100%;
+}

@@ -1,0 +1,376 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    box-sizing: border-box;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    //background-color: #333;
+    //color: white;
+    //padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+main.fullscreen, main {
+    height: calc(100% - 80px);
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-top: 80px; /* header height */
+}
+
+#map {
+    flex-grow: 1;
+    height: 100%;
+    width: 75%; /* 기본적으로 전체 화면을 차지하도록 설정 */
+}
+
+#left-panel {
+    width: 25%;
+    height: 100%;
+    overflow-y: auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#place-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#place-list li {
+    margin-bottom: 10px;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+#place-list li:hover {
+    background: #f0f0f0;
+}
+
+#pagination {
+    margin: 10px auto;
+    text-align: center;
+}
+
+#pagination a {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 5px 10px;
+    background: #007BFF;
+    color: white;
+    border-radius: 3px;
+    text-decoration: none;
+}
+
+#pagination .on {
+    font-weight: bold;
+    cursor: default;
+    color: #777;
+}
+
+.place-info {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#top-left-buttons {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+    display: flex;
+    gap: 10px;
+}
+
+#top-left-buttons button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+#top-left-buttons button:hover {
+    background-color: #0056b3;
+}
+
+#right-panel {
+    display: none;
+}
+
+#place-info {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.top-bar {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 10;
+}
+
+.top-bar button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007BFF;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.top-bar button:hover {
+    background-color: #0056b3;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 10px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover, .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.remove-button {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    line-height: 1rem;
+    transition: background 0.3s;
+}
+
+.remove-button:hover {
+    background-color: #cc0000;
+}
+
+.keyword-list {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.keyword-list div {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.keyword-list div:hover {
+    background-color: #eee;
+}
+
+.autocomplete-item {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.autocomplete-item:hover {
+    background-color: #e9e9e9;
+}
+
+#groupInputs .group-input {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+#groupInputs .group-input input[type="text"] {
+    flex-grow: 1;
+    padding: 0.5rem;
+    margin-right: 10px;
+    box-sizing: border-box;
+}
+
+#group-modal #addGroup {
+    display: block;
+    margin: 0 auto 10px auto;
+    background-color: #28a745;
+    padding: 0.25rem;
+    font-size: 1rem;
+    width: 30px;
+    height: 30px;
+    line-height: 1rem;
+    text-align: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#group-modal #addGroup:hover {
+    background-color: #218838;
+}
+
+#group-modal #findMidpoint {
+    display: block;
+    margin: 0 auto;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#group-modal #findMidpoint:hover {
+    background-color: #0056b3;
+}
+
+#address-search-modal .modal-content {
+    max-width: 500px;
+}
+
+#address-search-results {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.place-item {
+    position: relative;
+    padding-right: 50px; /* 버튼이 겹치지 않도록 패딩 추가 */
+}
+
+.place-item .place-name {
+    font-weight: bold;
+}
+
+.place-item .place-info {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.place-container {
+    position: relative;
+    padding-right: 50px; /* 버튼이 겹치지 않도록 패딩 추가 */
+}
+
+.save-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%; /* 둥근 모양 */
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+    transition: background 0.3s;
+}
+
+.save-btn[data-saved="true"] {
+    background-color: #dc3545;
+}
+
+.save-btn:hover {
+    background-color: #0056b3;
+}
+
+#current-location-button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+    transition: background 0.3s;
+}
+
+#current-location-button:hover {
+    background-color: #218838;
+}
+
+.label {
+    background-color: white;
+    border: 1px solid black;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 14px;
+    text-align: center;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+}

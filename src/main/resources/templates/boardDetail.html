@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 상세 페이지</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f0f0f0;
+        }
+        header {
+            width: 100%;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        header h1 a {
+            text-decoration: none;
+            color: #000;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .buttons a {
+            text-decoration: none;
+            color: #ffffff;
+            background-color: #000000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .buttons a:hover {
+            background-color: #444444;
+        }
+        .buttons span {
+            color: #000000;
+            font-weight: bold;
+        }
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            background-color: white;
+            padding: 40px 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            margin: 20px auto;
+        }
+        .boardHeader {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .boardHeader .left {
+            display: inline-block;
+        }
+        .boardHeader .right {
+            display: inline-block;
+            text-align: right;
+        }
+        .right p {
+            margin: 0 5px;
+            display: inline-block;
+        }
+        .boardContents {
+            margin-bottom: 20px;
+        }
+        .boardContents p {
+            white-space: pre-wrap;
+        }
+        .comments {
+            margin-top: 30px;
+        }
+        .comments h3 {
+            margin-bottom: 10px;
+        }
+        .comment-item {
+            margin-bottom: 20px;
+        }
+        .comment-item p {
+            margin: 5px 0;
+        }
+        footer {
+            text-align: center;
+            margin-top: auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.1);
+        }
+        .boardFooter button {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .boardFooter button:hover {
+            background-color: #444444;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1><a href="/">중간에서 만나</a></h1>
+    <div class="buttons">
+        <span th:if="${session.userId}"><b th:text="${session.userId}"></b>님</span>
+        <a th:if="${session.userId}" href="/logout">로그아웃</a>
+        <a th:if="${session.userId == null}" href="/login">로그인</a>
+    </div>
+</header>
+<div class="container">
+    <div class="boardHeader">
+        <div class="left">
+            <h2 th:text="${board.boardTitle}">글 제목</h2>
+        </div>
+        <div class="right">
+            <p th:text="'작성자: ' + ${board.boardWriter}">작성자</p>
+            <p th:text="'조회수: ' + ${board.boardHits}">조회수</p>
+        </div>
+    </div>
+    <div class="boardContents">
+        <p th:text="${board.boardContents}">글 내용</p>
+        <div th:if="${board.storedFileName}">
+            <p>첨부파일:</p>
+            <a th:href="@{|/upload/${board.storedFileName}|}" th:text="${board.originalFileName}">첨부파일 이름</a>
+        </div>
+    </div>
+    <div class="comments">
+        <h3>댓글</h3>
+        <div id="comment-write">
+            <input id="commentContents" type="text" placeholder="댓글 달기...">
+            <button class="comment_submit" onclick="commentWrite()">게시</button>
+        </div>
+        <div id="comment-list" th:each="comment: ${commentList}">
+            <div class="comment-item">
+                <p th:text="${comment.commentWriter}">댓글 작성자</p>
+                <p th:text="${comment.commentContents}">댓글 내용</p>
+                <p th:text="${comment.commentCreatedTime}">댓글 작성 시간</p>
+            </div>
+        </div>
+    </div>
+    <div class="boardFooter">
+        <button onclick="listReq()">목록</button>
+        <button onclick="updateReq()">수정</button>
+        <button onclick="deleteReq()">삭제</button>
+    </div>
+</div>
+<footer>
+    <p>© PROJECT-X JAVA TEAM 3</p>
+</footer>
+<script th:inline="javascript">
+    const commentWrite = () => {
+        const contents = document.getElementById("commentContents").value;
+        console.log("내용: ", contents);
+        const id = [[${board.id}]];
+        $.ajax({
+            type: "post",
+            url: "/comment/save",
+            data: {
+                "commentContents": contents,
+                "boardId": id
+            },
+            success: function (res) {
+                console.log("요청성공", res);
+                let newComment = `
+                  <div class="comment-item">
+                    <p>${res.commentWriter}</p>
+                    <p>${res.commentContents}</p>
+                    <p>${res.commentCreatedTime}</p>
+                  </div>
+                `;
+                document.getElementById('comment-list').insertAdjacentHTML('beforeend', newComment);
+
+                document.getElementById('commentWriter').value = '';
+                document.getElementById('commentContents').value = '';
+            },
+            error: function (err) {
+                console.log("요청실패", err);
+            }
+        });
+    }
+    const listReq = () => {
+        console.log("목록 요청");
+        const page = [[${page}]];
+        location.href = "/board/paging?page="+page;
+    }
+    const updateReq = () => {
+        console.log("수정 요청");
+        const id = [[${board.id}]];
+        location.href = "/board/update/" + id;
+    }
+    const deleteReq = () => {
+        console.log("삭제 요청");
+        const id = [[${board.id}]];
+        location.href = "/board/delete/" + id;
+    }
+</script>
+</body>
+</html>

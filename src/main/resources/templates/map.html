@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지도 메인 페이지</title>
+    <link rel="stylesheet" href="/css/mapStyles.css">
+    <script src="/js/apikey.js"></script>
+    <script>
+        document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey='+ KAKAO_MAPS_API_KEY + '&libraries=services"><\/script>');
+    </script>
+
+    <script th:inline="javascript">
+        const userId = /*[[${userId}]]*/ null; // userId 값이 null일 경우에 대비하여 null 처리
+        console.log("userId", userId);
+    </script>
+
+    <script defer src="/js/map-utils.js"></script>
+    <script defer src="/js/init.js"></script>
+    <script defer src="/js/map.js"></script>
+    <script defer src="/js/modal.js"></script>
+    <script defer src="/js/group.js"></script>
+    <script defer src="/js/midpoint.js"></script>
+    <script defer src="/js/recommend.js"></script>
+    <script defer src="/js/filter.js"></script>
+    <script defer src="/js/search.js"></script>
+    <script defer src="/js/category.js"></script>
+
+</head>
+<body>
+<header>
+    <div class="top-bar">
+        <button onclick="location.href='/board'">게시판</button>
+        <input type="hidden" id="userId" th:value="${session.userId}">
+        <div class="auth-buttons">
+            <button onclick="location.href='/login'">로그인</button>
+            <button onclick="location.href='/mypage'">마이페이지</button>
+        </div>
+    </div>
+</header>
+<main class="fullscreen">
+    <div id="map">
+        <div id="top-left-buttons">
+            <button id="myPageButton" onclick="location.href='/mypage'">마이페이지</button>
+            <button id="groupButton">그룹 참여</button>
+        </div>
+    </div>
+    <div id="right-panel" class="panel">
+        <div class="panel-header">
+            <h2>가게 정보</h2>
+        </div>
+        <hr>
+        <div id="place-info"></div>
+    </div>
+    <div id="left-panel" class="panel" style="display: none;">
+        <div class="panel-header">
+            <h2>추천 장소 목록</h2>
+        </div>
+        <hr>
+        <ul id="place-list"></ul>
+    </div>
+</main>
+
+<div id="group-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>그룹 생성</h2>
+        <div id="groupInputs">
+            <div class="group-input">
+                <label for="group1">유저 1:</label>
+                <input type="text" id="group1" class="group" placeholder="주소 또는 키워드 입력" name="group1" readonly onclick="openAddressSearchModal(this)">
+                <div id="keywordList1" class="keyword-list"></div>
+                <button class="remove-button" onclick="removeGroupInput(this)">X</button>
+            </div>
+        </div>
+        <button id="addGroup">+</button>
+        <button id="findMidpoint" onclick="findMidpoint()">중간지점 찾기</button>
+    </div>
+</div>
+
+<div id="address-search-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-address-modal">&times;</span>
+        <h2>주소 검색</h2>
+        <input type="text" id="address-search-input" placeholder="주소 또는 키워드 입력" onkeydown="handleAddressSearchKeyDown(event)">
+        <button id="address-search-button" onclick="executeAddressSearch()">검색</button>
+        <div id="address-search-results" class="keyword-list"></div>
+        <button id="current-location-button" onclick="useCurrentLocation()">현재 위치 사용</button>
+    </div>
+</div>
+
+<script>
+    function findMidpoint() {
+        document.getElementById('left-panel').style.display = 'block';
+        document.getElementById('map').style.width = '55%'; // Adjust map width to accommodate both panels
+        document.getElementById('right-panel').style.display = 'none';
+    }
+</script>
+
+<div id="favoriteListModal" class="modal">
+    <div class="modal-content">
+        <span class="close-favorite-modal">&times;</span>
+        <div id="favoriteListContainer"></div>
+    </div>
+</div>
+
+</body>
+</html>

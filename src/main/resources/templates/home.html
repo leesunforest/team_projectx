@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중간에서 만나</title>
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/homeStyle.css">
+    <link rel="stylesheet" href="/css/navigation.css">
+</head>
+<body>
+<header>
+    <h1><a href="/">중간에서 만나</a></h1>
+    <div class="buttons">
+        <span th:if="${session.userId}">안녕하세요, <b th:text="${session.userId}"></b>님</span>
+        <a th:if="${session.userId}" href="/logout">로그아웃</a>
+        <a th:if="${session.userId == null}" href="/login">로그인</a>
+    </div>
+</header>
+<main>
+    <a href="/map" lang="en">MAP</a>
+    <a href="/board/list" lang="en">BOARD</a>
+</main>
+<footer>
+    <p>© PROJECT-X JAVA TEAM 3</p>
+</footer>
+</body>
+</html>
