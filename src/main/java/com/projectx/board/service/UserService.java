@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -48,5 +46,9 @@ public class UserService {
         if (session != null) {
             session.invalidate();
         }
+    }
+
+    public UserEntity findUserByUserId(String userId) {
+        return userRepository.findByUserId(userId);
     }
 }

@@ -1,11 +1,9 @@
 package com.projectx.board.service;
 
 import com.projectx.board.entity.Favorite;
-import com.projectx.board.entity.User;
+import com.projectx.board.entity.UserEntity;
 import com.projectx.board.repository.FavoriteRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +18,11 @@ public class FavoriteService {
     public Favorite saveFavorite(String userId, String storeName, String storeAddress, String storeNumber) {
 
         // 사용자 아이디로 사용자 정보 조회
-        User user = userService.findUserByUserId(userId);
+        UserEntity user = userService.findUserByUserId(userId);
+
+        if (user == null) {
+            throw new IllegalArgumentException("유저 정보 에러");
+        }
 
         // favorite 에 저장해야 하는 값 지정
         Favorite favorite = Favorite.builder()

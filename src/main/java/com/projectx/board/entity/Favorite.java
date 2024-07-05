@@ -33,13 +33,13 @@ public class Favorite {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no", nullable = false)
     @JsonIgnore
-    private User user; // 사용자 고유 번호
+    private UserEntity user; // 사용자 고유 번호
 
     @Column(name = "user_id", nullable = false, length = 15)
     private String userId; // 사용자 ID
 
     @Builder
-    public Favorite(String storeName, String storeAddress, String storeNumber, User user, String userId) {
+    public Favorite(String storeName, String storeAddress, String storeNumber, UserEntity user, String userId) {
         this.storeName = storeName;
         this.storeAddress = storeAddress;
         this.storeNumber = storeNumber;
