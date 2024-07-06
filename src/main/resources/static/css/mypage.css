@@ -31,7 +31,7 @@ body {
     width: 120px;
     height: 50px;
     padding: 10px 20px;
-    background-color: #616161;
+    background-color: #000000;
     color: white;
     border: none;
     cursor: pointer;
@@ -41,7 +41,7 @@ body {
 }
 
 .mypage-buttons button:hover {
-    background-color: #4a4a4a;
+    background-color: #444444;
 }
 
 #userReqList {
