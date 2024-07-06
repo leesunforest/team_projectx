@@ -2,6 +2,8 @@ package com.projectx.board.controller;
 
 import com.projectx.board.dto.CommentDTO;
 import com.projectx.board.service.CommentService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -19,14 +22,21 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
     @PostMapping("/save")
-    public ResponseEntity save(@ModelAttribute CommentDTO commentDTO) {
-        System.out.println("commentDTO = " + commentDTO);
-        Long saveResult = commentService.save(commentDTO);
-        if (saveResult != null) {
-            List<CommentDTO> commentDTOList = commentService.findAll(commentDTO.getBoardId());
-            return new ResponseEntity<>(commentDTOList, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("해당 게시글이 존재하지 않습니다.", HttpStatus.NOT_FOUND);
+    public ResponseEntity save(@ModelAttribute CommentDTO commentDTO, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            String userId = (String) session.getAttribute("userId");
+            Long saveResult = commentService.save(commentDTO, userId);
+            if (saveResult != null) {
+                List<CommentDTO> commentDTOList = commentService.findAll(commentDTO.getBoardId());
+                return new ResponseEntity<>(commentDTOList, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("해당 게시글이 존재하지 않습니다.", HttpStatus.NOT_FOUND);
+            }
+        }
+        else{
+            return new ResponseEntity<>("인증된 유저가 아닙니다", HttpStatus.BAD_REQUEST);
         }
     }
 
