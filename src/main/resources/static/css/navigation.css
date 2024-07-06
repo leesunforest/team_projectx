@@ -1,5 +1,9 @@
 /* navigation.css */
 
+body {
+    padding-top: 80px; /* Added to make space for the fixed header */
+}
+
 header {
     width: 100%;
     padding: 20px;
@@ -8,8 +12,9 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
+    position: fixed; /* Changed from absolute to fixed */
     top: 0;
+    z-index: 1000; /* Added to ensure header is above other elements */
 }
 
 header h1 {
@@ -28,6 +33,7 @@ header h1 a {
     display: flex;
     gap: 10px;
     align-items: center;
+    margin-right: 20px; /* Added right margin */
 }
 
 .buttons a {
@@ -37,6 +43,7 @@ header h1 a {
     padding: 10px 20px;
     border-radius: 5px;
     font-weight: bold;
+    margin-right: 20px;
 }
 
 .buttons a:hover {
