@@ -6,6 +6,7 @@ body {
     margin: 0;
     font-family: 'Noto Sans KR', sans-serif;
     background-color: #f0f0f0;
+    padding-top: 80px; /* Added to make space for the fixed header */
 }
 
 .container {

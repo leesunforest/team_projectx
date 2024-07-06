@@ -1,92 +1,92 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>마이 페이지</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/mypage.css">
-    <link rel="stylesheet" href="/css/navigation.css">
+  <meta charset="UTF-8">
+  <title>마이 페이지</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/mypage.css">
+  <link rel="stylesheet" href="/css/navigation.css">
 </head>
 <body>
 <header>
-    <h1><a href="/">중간에서 만나</a></h1>
-    <div class="buttons">
-        <span th:if="${session.userId}"><b th:text="${session.userId}"></b>님</span>
-        <a th:if="${session.userId}" href="/logout">로그아웃</a>
-        <a th:if="${session.userId == null}" href="/login">로그인</a>
-    </div>
+  <h1><a href="/">중간에서 만나</a></h1>
+  <div class="buttons">
+    <span th:if="${session.userId}"><b th:text="${session.userId}"></b>님</span>
+    <a th:if="${session.userId}" href="/logout">로그아웃</a>
+    <a th:if="${session.userId == null}" href="/login">로그인</a>
+  </div>
 </header>
 <div class="container">
-    <div class="mypage-buttons">
-        <button onclick="location.href='/mypage/favorites/list'">저장한 가게</button>
-        <button onclick="userBoardReq()">내가 쓴 글</button>
-        <button onclick="userCommentReq()">내가 쓴 댓글</button>
-    </div>
-    <hr>
-    <div id="userReqList">
-    </div>
+  <div class="mypage-buttons">
+    <button onclick="location.href='/mypage/favorites/list'">저장한 가게</button>
+    <button onclick="userBoardReq()">내가 쓴 글</button>
+    <button onclick="userCommentReq()">내가 쓴 댓글</button>
+  </div>
+  <hr>
+  <div id="userReqList">
+  </div>
 </div>
 <script>
 
-    const userBoardReq = () => {
-        fetch('/board/userBoard')
+  const userBoardReq = () => {
+    fetch('/board/userBoard')
             .then(response => response.json())
             .then(data => {
-                const userReqListDiv = document.getElementById('userReqList');
-                userReqListDiv.innerHTML = '';
+              const userReqListDiv = document.getElementById('userReqList');
+              userReqListDiv.innerHTML = '';
 
-                if (data.length > 0) {
-                    const ul = document.createElement('ul');
+              if (data.length > 0) {
+                const ul = document.createElement('ul');
 
-                    data.forEach(item => {
-                        const li = document.createElement('li');
-                        li.textContent = `제목: ${item.boardTitle}, 조회수: ${item.boardHits}`;
-                        li.onclick = () => {
-                            window.location.href = `/board/${item.id}`;
-                        };
-                        ul.appendChild(li);
-                    });
+                data.forEach(item => {
+                  const li = document.createElement('li');
+                  li.textContent = `제목: ${item.boardTitle}, 조회수: ${item.boardHits}`;
+                  li.onclick = () => {
+                    window.location.href = `/board/${item.id}`;
+                  };
+                  ul.appendChild(li);
+                });
 
-                    userReqListDiv.appendChild(ul);
-                } else {
-                    userReqListDiv.textContent = '작성한 게시글이 없습니다.';
-                }
+                userReqListDiv.appendChild(ul);
+              } else {
+                userReqListDiv.textContent = '작성한 게시글이 없습니다.';
+              }
             })
             .catch(error => {
-                console.error('Error fetching user boards:', error);
-                document.getElementById('userReqList').textContent = '게시글을 불러오는 중 오류가 발생했습니다.';
+              console.error('Error fetching user boards:', error);
+              document.getElementById('userReqList').textContent = '게시글을 불러오는 중 오류가 발생했습니다.';
             });
-    };
+  };
 
-    const userCommentReq = () => {
-        fetch('/comment/userComment')
+  const userCommentReq = () => {
+    fetch('/comment/userComment')
             .then(response => response.json())
             .then(data => {
-                const userReqListDiv = document.getElementById('userReqList');
-                userReqListDiv.innerHTML = '';
+              const userReqListDiv = document.getElementById('userReqList');
+              userReqListDiv.innerHTML = '';
 
-                if (data.length > 0) {
-                    const ul = document.createElement('ul');
+              if (data.length > 0) {
+                const ul = document.createElement('ul');
 
-                    data.forEach(item => {
-                        const li = document.createElement('li');
-                        li.textContent = `${item.commentContents}, 작성일자: ${item.commentCreatedTime}`;
-                        li.onclick = () => {
-                            window.location.href = `/board/${item.boardId}`;
-                        };
-                        ul.appendChild(li);
-                    });
+                data.forEach(item => {
+                  const li = document.createElement('li');
+                  li.textContent = `${item.commentContents}, 작성일자: ${item.commentCreatedTime}`;
+                  li.onclick = () => {
+                    window.location.href = `/board/${item.boardId}`;
+                  };
+                  ul.appendChild(li);
+                });
 
-                    userReqListDiv.appendChild(ul);
-                } else {
-                    userReqListDiv.textContent = '작성한 댓글이 없습니다.';
-                }
+                userReqListDiv.appendChild(ul);
+              } else {
+                userReqListDiv.textContent = '작성한 댓글이 없습니다.';
+              }
             })
             .catch(error => {
-                console.error('Error fetching user comments:', error);
-                document.getElementById('userReqList').textContent = '댓글을 불러오는 중 오류가 발생했습니다.';
+              console.error('Error fetching user comments:', error);
+              document.getElementById('userReqList').textContent = '댓글을 불러오는 중 오류가 발생했습니다.';
             });
-    };
+  };
 </script>
 </body>
 </html>

@@ -1,16 +1,17 @@
+/* mapStyles.css */
 body, html {
     height: 100%;
     margin: 0;
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: Noto Sans KR, sans-serif;
     box-sizing: border-box;
     background-color: #f4f4f4;
     color: #333;
 }
 
 header {
-    //background-color: #333;
-    //color: white;
-    //padding: 1rem;
+    background-color: #333;
+    color: white;
+    padding: 1rem;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: fixed;
@@ -130,29 +131,6 @@ main.fullscreen, main {
     background: #f0f0f0;
     border: 1px solid #ccc;
     border-radius: 5px;
-}
-
-.top-bar {
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    z-index: 10;
-}
-
-.top-bar button {
-    padding: 10px 20px;
-    border: none;
-    background-color: #007BFF;
-    color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.top-bar button:hover {
-    background-color: #0056b3;
 }
 
 .modal {
