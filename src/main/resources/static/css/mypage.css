@@ -1,0 +1,75 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f0f0f0;
+    padding-top: 80px; /* To accommodate the fixed header height */
+}
+
+.container {
+    width: 80%;
+    max-width: 1200px;
+    background-color: white;
+    padding: 40px 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.mypage-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px; /* Adjusted to create space below buttons */
+}
+
+.mypage-buttons button {
+    width: 120px;
+    height: 50px;
+    padding: 10px 20px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.mypage-buttons button:hover {
+    background-color: #444444;
+}
+
+#userReqList {
+    margin-top: 20px; /* Adjust to make space for the buttons */
+}
+
+#userReqList ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#userReqList ul li {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    background-color: white;
+}
+
+#userReqList ul li:hover {
+    background-color: #f8f8f8;
+}
+
+footer {
+    text-align: center;
+    margin-top: auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.1);
+}

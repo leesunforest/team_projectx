@@ -4,18 +4,15 @@
     <meta charset="UTF-8">
     <title>중간에서 만나</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/boardLIst.css">
-    <style>
-        ul {
-            list-style-type: none; /* 기호 제거 */
-        }
-    </style>
+    <link rel="stylesheet" href="/css/boardList.css">
+    <link rel="stylesheet" href="/css/navigation.css">
 </head>
 <body>
 <header>
     <h1><a href="/">중간에서 만나</a></h1>
     <div class="buttons">
         <span th:if="${session.userId}"><b th:text="${session.userId}"></b>님</span>
+        <a th:if="${session.userId}" href="/mypage">마이페이지</a>
         <a th:if="${session.userId}" href="/logout">로그아웃</a>
         <a th:if="${session.userId == null}" href="/login">로그인</a>
     </div>

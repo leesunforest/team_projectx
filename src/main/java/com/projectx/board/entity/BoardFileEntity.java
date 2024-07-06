@@ -44,4 +44,3 @@ public class BoardFileEntity extends BaseEntity {
 
 
 
-
