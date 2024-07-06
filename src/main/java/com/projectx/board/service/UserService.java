@@ -48,7 +48,9 @@ public class UserService {
         }
     }
 
+    // userNo 값을 받아오기 위한 사용자 찾는 메서드
     public UserEntity findUserByUserId(String userId) {
         return userRepository.findByUserId(userId);
     }
+
 }

@@ -14,4 +14,14 @@ public class HomeController {
     public String map() {
         return "map";
     }
+
+    @GetMapping("/mypage")
+    public String mypage() {
+        return "mypage";
+    }
+
+    @GetMapping("/mypage/favorites")
+    public String favorites() {
+        return "favoriteList";
+    }
 }

@@ -73,8 +73,8 @@ function recommendPlaces(midpoint) {
 
                         // 서버에서 주입된 userId 가져오기
 
-                        let userId = document.getElementById('userId').value
-                        console.log(userId)
+                        let userId = document.getElementById('userId').value;
+                        console.log("recommend userId", userId);
 
                         if (!userId) {
                             // userId가 없으면 로그인 페이지로 이동
