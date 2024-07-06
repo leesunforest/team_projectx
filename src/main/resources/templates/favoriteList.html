@@ -13,6 +13,7 @@
     <h1><a href="/">중간에서 만나</a></h1>
     <div class="buttons">
         <span th:if="${session.userId}"><b th:text="${session.userId}"></b>님</span>
+        <a th:if="${session.userId}" href="/mypage">마이페이지</a>
         <a th:if="${session.userId}" href="/logout">로그아웃</a>
         <a th:if="${session.userId == null}" href="/login">로그인</a>
     </div>
