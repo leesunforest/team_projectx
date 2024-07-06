@@ -59,7 +59,8 @@
 <div class="container">
     <form action="/board/save" method="post" enctype="multipart/form-data">
         <div class="form-group">
-            <input type="text" name="boardWriter" placeholder="작성자" required>
+<!--            <input type="text" name="boardWriter" placeholder="작성자" required>-->
+            <input type="hidden" id="boardWriter" th:value="${user_id}">
         </div>
         <div class="form-group">
             <input type="password" name="boardPass" placeholder="비밀번호" required>
@@ -74,6 +75,10 @@
             <input type="file" name="boardFile">
         </div>
         <button type="submit">글작성</button>
+        <!-- id가 있을 때에는 [수정] 버튼을, 없을 때에는 [등록] 버튼이 보이도록 함 -->
+<!--        <button th:if="${user_id} != null" type="button" id="modify-btn">수정</button>-->
+<!--        <button th:if="${user_id} == null" type="button" id="create-btn">등록</button>-->
+
     </form>
 </div>
 </body>
