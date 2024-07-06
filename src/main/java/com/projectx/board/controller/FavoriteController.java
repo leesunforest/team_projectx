@@ -1,6 +1,5 @@
 package com.projectx.board.controller;
 
-import com.projectx.board.config.LoginUser;
 import com.projectx.board.dto.FavoriteRequestDTO;
 import com.projectx.board.dto.FavoriteResponseDTO;
 import com.projectx.board.entity.Favorite;
@@ -8,8 +7,6 @@ import com.projectx.board.service.FavoriteService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -26,27 +22,6 @@ import java.util.stream.Collectors;
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
-
-//    // 저장 요청 처리 메서드 : 저장하기 위한 정보를 받아옴
-//    @PostMapping("/save")
-//    public ResponseEntity<?> saveFavorite(@RequestBody FavoriteRequestDTO favoriteDTO) {
-//        try {
-//            // 저장 로직
-//            Favorite favorite = favoriteService.saveFavorite(
-//                    favoriteDTO.getUserId(),
-//                    favoriteDTO.getStoreName(),
-//                    favoriteDTO.getStoreAddress(),
-//                    favoriteDTO.getStoreNumber());
-//
-//            FavoriteResponseDTO responseDTO = new FavoriteResponseDTO(favorite);
-//
-//            return ResponseEntity.ok(responseDTO);
-//        } catch (Exception e) {
-//            // 예외 처리
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while saving the favorite: " + e.getMessage());
-//        }
-//    }
 
     // userId 를 세션에서 받아 오는 경우 :
     @PostMapping("/save")
