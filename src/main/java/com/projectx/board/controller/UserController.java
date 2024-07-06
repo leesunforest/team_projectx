@@ -51,7 +51,6 @@ public class UserController {
         } catch (IllegalArgumentException e) {
             return "redirect:/login?error=true"; // 로그인 페이지로 리디렉션하면서 URL 파라미터에 에러 메시지 추가
         }
-
     }
 
     @GetMapping("/logout")
