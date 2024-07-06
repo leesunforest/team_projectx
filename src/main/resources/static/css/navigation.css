@@ -36,6 +36,7 @@ header h1 a {
     padding: 10px 20px;
     border-radius: 5px;
     font-weight: bold;
+    margin-right: 10px;
 }
 
 .buttons a:hover {

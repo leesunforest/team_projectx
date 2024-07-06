@@ -18,7 +18,7 @@
 </header>
 <div class="container">
   <div class="mypage-buttons">
-    <button onclick="userStoreReq()">저장한 가게</button>
+    <button onclick="location.href='/mypage/favorites/list'">저장한 가게</button>
     <button onclick="userBoardReq()">내가 쓴 글</button>
     <button onclick="userCommentReq()">내가 쓴 댓글</button>
   </div>
@@ -27,9 +27,6 @@
   </div>
 </div>
 <script>
-  const userStoreReq = () => {
-    location.href = '/mypage/favorite/list/${userNo}';
-  };
 
   const userBoardReq = () => {
     fetch('/board/userBoard')
