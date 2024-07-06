@@ -43,8 +43,15 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@ModelAttribute UserLoginDTO userLoginDTO, HttpServletRequest request, Model model) {
-        String userId = userService.login(userLoginDTO, request);
-        return "redirect:/";
+        try {
+            String userId = userService.login(userLoginDTO, request);
+            HttpSession session = request.getSession();
+            session.setAttribute("userId", userId);
+            return "redirect:/";
+        } catch (IllegalArgumentException e) {
+            return "redirect:/login?error=true"; // 로그인 페이지로 리디렉션하면서 URL 파라미터에 에러 메시지 추가
+        }
+
     }
 
     @GetMapping("/logout")

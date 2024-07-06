@@ -60,6 +60,15 @@
             text-decoration: underline;
         }
     </style>
+    <script>
+        // URL 파라미터 확인 및 에러 메시지 표시
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('error')) {
+                alert('회원정보가 올바르지 않습니다');
+            }
+        }
+    </script>
 </head>
 <body>
 <div class="container">
