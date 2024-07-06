@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>게시글 상세 페이지</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
         body {
             display: flex;
@@ -146,9 +147,13 @@
         <h3>댓글</h3>
         <div id="comment-write">
             <input id="commentContents" type="text" placeholder="댓글 달기...">
-            <button class="comment_submit" onclick="commentWrite()">게시</button>
+            <button class="comment_submit" th:onclick="'commentWrite()'" id="commentSubmitButton">게시</button>
         </div>
-        <div id="comment-list" th:each="comment: ${commentList}">
+        <div th:if="${commentList.empty}">
+            <div id="comment-list"></div>
+        </div>
+        <!-- 댓글이 있을 경우에는 th:each를 통해 댓글 리스트를 출력 -->
+        <div th:if="${not commentList.empty}" th:each="comment: ${commentList}">
             <div class="comment-item">
                 <p th:text="${comment.commentWriter}">댓글 작성자</p>
                 <p th:text="${comment.commentContents}">댓글 내용</p>
@@ -166,40 +171,55 @@
     <p>© PROJECT-X JAVA TEAM 3</p>
 </footer>
 <script th:inline="javascript">
-    const commentWrite = () => {
-        const contents = document.getElementById("commentContents").value;
-        console.log("내용: ", contents);
-        const id = [[${board.id}]];
-        $.ajax({
-            type: "post",
-            url: "/comment/save",
-            data: {
-                "commentContents": contents,
-                "boardId": id
-            },
-            success: function (res) {
-                console.log("요청성공", res);
-                let newComment = `
-                  <div class="comment-item">
-                    <p>${res.commentWriter}</p>
-                    <p>${res.commentContents}</p>
-                    <p>${res.commentCreatedTime}</p>
-                  </div>
-                `;
-                document.getElementById('comment-list').insertAdjacentHTML('beforeend', newComment);
 
-                document.getElementById('commentWriter').value = '';
-                document.getElementById('commentContents').value = '';
-            },
-            error: function (err) {
-                console.log("요청실패", err);
-            }
-        });
-    }
+        const commentWrite = () => {
+            const contents = document.getElementById("commentContents").value;
+            console.log("내용: ", contents);
+            const id = [[${board.id}]];
+            $.ajax({
+                type: "post",
+                url: "/comment/save",
+                data: {
+                    "commentContents": contents,
+                    "boardId": id
+                },
+                success: function (res) {
+                    console.log("요청성공", res);
+                    let comments = res;
+
+                    let newCommentsHTML = '';
+
+                    // 각 댓글 데이터를 HTML로 변환하여 추가
+                    comments.forEach(function(comment) {
+                        newCommentsHTML += `
+                            <div class="comment-item">
+                                <p>${comment.commentWriter}</p>
+                                <p>${comment.commentContents}</p>
+                                <p>${comment.commentCreatedTime}</p>
+                            </div>
+                        `;
+                    });
+
+                    const commentList = document.getElementById('comment-list');
+                    if (commentList) {
+                        commentList.innerHTML = newCommentsHTML;
+                    } else {
+                        console.error("#comment-list 요소를 찾을 수 없습니다.");
+                    }
+
+                    //댓글 입력 필드 초기화
+                    document.getElementById('commentContents').value = '';
+                },
+                error: function (err) {
+                    console.log("요청실패", err);
+                }
+            });
+        }
+
+
     const listReq = () => {
         console.log("목록 요청");
-        const page = [[${page}]];
-        location.href = "/board/paging?page="+page;
+        location.href = "/board/list";
     }
     const updateReq = () => {
         console.log("수정 요청");

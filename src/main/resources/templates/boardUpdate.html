@@ -60,12 +60,6 @@
     <form action="/board/update" method="post" name="updateForm">
         <input type="hidden" name="id" th:value="${boardUpdate.id}">
         <div class="form-group">
-            <input type="text" name="boardWriter" th:value="${boardUpdate.boardWriter}" readonly>
-        </div>
-        <div class="form-group">
-            <input type="password" name="boardPass" id="boardPass" placeholder="비밀번호">
-        </div>
-        <div class="form-group">
             <input type="text" name="boardTitle" th:value="${boardUpdate.boardTitle}" placeholder="제목">
         </div>
         <div class="form-group">
@@ -77,13 +71,7 @@
 </div>
 <script th:inline="javascript">
     const boardUpdate = () => {
-        const pass = [[${boardUpdate.boardPass}]];
-        const inputPass = document.getElementById("boardPass").value;
-        if (pass === inputPass) {
-            document.updateForm.submit();
-        } else {
-            alert("비밀번호가 일치하지 않습니다!");
-        }
+        document.updateForm.submit();
     }
 </script>
 </body>

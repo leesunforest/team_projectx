@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>중간에서 만나</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/boardLIst.css">
+    <style>
+        ul {
+            list-style-type: none; /* 기호 제거 */
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -38,14 +43,24 @@
                 </tbody>
             </table>
         </div>
-        <div class="pagination-container">
-            <div class="pagination">
-                <a href="#" onclick="listReq(1)">1</a>
-                <a href="#" onclick="listReq(2)">2</a>
-                <a href="#" onclick="listReq(3)">3</a>
-                <a href="#" onclick="listReq(4)">4</a>
-                <a href="#" onclick="listReq(5)">5</a>
-            </div>
+        <div class="pagination-container" th:with="start=${(boardList.number/maxPage)*maxPage + 1}, end=(${(boardList.totalPages == 0) ? 1 : (start + (maxPage - 1) < boardList.totalPages ? start + (maxPage - 1) : boardList.totalPages)})">
+            <ul class="pagination" >
+                <li class="page-item" th:classappend="${boardList.number eq 0}?'disabled':''">
+                    <a th:href="@{'/board/list' + '?page=' + ${boardList.number-1}}" aria-label='Previous' class="page-link">
+                        <span aria-hidden='true'>이전</span>
+                    </a>
+                </li>
+
+                <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${boardList.number eq page-1}?'active':''">
+                    <a th:href="@{'/board/list' + '?page=' + ${page-1}}" th:inline="text" class="page-link">[[${page}]]</a>
+                </li>
+
+                <li class="page-item" th:classappend="${boardList.number+1 ge boardList.totalPages}?'disabled':''">
+                    <a th:href="@{'/board/list' + '?page=' + ${boardList.number+1}}" aria-label='Next' class="page-link">
+                        <span aria-hidden='true'>다음</span>
+                    </a>
+                </li>
+            </ul>
             <a href="/board/save" class="write-button">글 작성</a>
         </div>
     </main>
@@ -54,9 +69,7 @@
     <p>© PROJECT-X JAVA TEAM 3</p>
 </footer>
 <script>
-    const listReq = (page) => {
-        location.href = `/board/paging?page=${page}`;
-    }
+
 </script>
 </body>
 </html>

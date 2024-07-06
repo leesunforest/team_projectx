@@ -10,8 +10,8 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping("/board/list")
-    public String boardList() {
-        return "boardList";
-    }
+//    @GetMapping("/board/list")
+//    public String boardList() {
+//        return "boardList";
+//    }
 }

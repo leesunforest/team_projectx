@@ -22,29 +22,19 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    private BooleanExpression boardCityOrTitleLike(String searchQuery) {
-        if (StringUtils.isEmpty(searchQuery) || searchQuery == null) {
-            return null;
-        }
-
-        BooleanExpression cityContains = QBoardEntity.boardEntity.city.like("%" + searchQuery + "%");
-        BooleanExpression titleContains = QBoardEntity.boardEntity.boardTitle.like("%" + searchQuery + "%");
-
-        return cityContains.or(titleContains);
-    }
-
     @Override
-    public Page<BoardItemDTO> getBoardItemPage(String searchQuery, Pageable pageable) {
+    public Page<BoardItemDTO> getBoardItemPage(Pageable pageable) {
         QBoardEntity board = QBoardEntity.boardEntity;
 
         QueryResults<BoardItemDTO> results = queryFactory
                 .select(
                         new QBoardItemDTO(
                                 board.id,
-                                board.boardTitle)
+                                board.boardTitle,
+                                board.boardWriter,
+                                board.boardHits)
                         )
                 .from(board)
-                .where(boardCityOrTitleLike(searchQuery))
                 .orderBy(board.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

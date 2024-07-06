@@ -1,6 +1,6 @@
 package com.projectx.board.controller;
 
-import com.projectx.board.config.LoginUser;
+//import com.projectx.board.config.LoginUser;
 import com.projectx.board.dto.FavoriteRequestDTO;
 import com.projectx.board.dto.FavoriteResponseDTO;
 import com.projectx.board.entity.Favorite;
