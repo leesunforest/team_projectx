@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     // 특정 사용자(userNo)의 저장 목록을 조회하는 메서드
-    List<Favorite> findByUserUserNo(Long userNo);
+//    List<Favorite> findByUserUserNo(Long userNo);
     List<Favorite> findByUser (UserEntity user);
 }

@@ -39,18 +39,6 @@ public class FavoriteController {
         return ResponseEntity.ok(responseDTO);
     }
 
-
-    // 특정 사용자의 저장 목록 조회 요청 메서드
-    /*
-    @GetMapping("/list/{userNo}")
-    public String getFavorites(@PathVariable Long userNo, Model model) {
-        List<Favorite> favorites = favoriteService.getFavorites(userNo);
-        model.addAttribute("favorites", favorites);
-
-        return "favoriteList"; // favoriteList.Html 로 가기 위함
-    }
-     */
-
     // userId 세션을 받아오는 경우
     @GetMapping("/list")
     public String getFavorites(HttpSession session, Model model) {
@@ -91,28 +79,6 @@ public class FavoriteController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("삭제에 실패했습니다: " + e.getMessage());
         }
     }
-
-    /*
-    // userId 세션을 가져오는 경우
-    @DeleteMapping("/delete/{favoriteId}")
-    public ResponseEntity<?> deleteFavorite(@PathVariable Long favoriteId, HttpSession session) {
-        try {
-            // 세션에서 userId 가져오기
-            String userId = (String) session.getAttribute("userId");
-            if (userId == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
-            }
-
-            // 삭제 로직
-            favoriteService.deleteFavorite(favoriteId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            // 예외 처리
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting the favorite: " + e.getMessage());
-        }
-    }
-     */
 
     // 예외 처리 메서드
     @ExceptionHandler(Exception.class)
