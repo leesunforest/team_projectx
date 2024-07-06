@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -108,17 +110,18 @@ public class BoardController {
         return "redirect:/board/list";
     }
 
-//    // /board/paging?page=1
-//    @GetMapping("/paging")
-//    public String paging(@PageableDefault(page = 1) Pageable pageable, Model model) {
-////        pageable.getPageNumber();
-//        Page<BoardDTO> boardList = boardService.paging(pageable);
-//        int blockLimit = 3;
-//        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
-//        int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
-//        model.addAttribute("boardList", boardList);
-//        model.addAttribute("startPage", startPage);
-//        model.addAttribute("endPage", endPage);
-//        return "paging";
-//    }
+    @GetMapping("/userBoard")
+    public ResponseEntity findUserBoard(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            String userId = (String) session.getAttribute("userId");
+            List<BoardItemDTO> userBoardList = boardService.findUserBoard(userId);
+
+            return new ResponseEntity<>(userBoardList, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>("인증된 유저가 아닙니다", HttpStatus.BAD_REQUEST);
+        }
+    }
 }

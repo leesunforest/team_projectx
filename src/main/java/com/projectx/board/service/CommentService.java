@@ -43,4 +43,13 @@ public class CommentService {
         return commentDTOList;
     }
 
+    public List<CommentDTO> findUserComment(String userId){
+        List<CommentEntity> userCommentList = commentRepository.findByCommentWriter(userId);
+        List<CommentDTO> commentDTOList = new ArrayList<>();
+        for (CommentEntity commentEntity: userCommentList) {
+            CommentDTO commentDTO = CommentDTO.toCommentDTO(commentEntity, commentEntity.getBoardEntity().getId());
+            commentDTOList.add(commentDTO);
+        }
+        return commentDTOList;
+    }
 }

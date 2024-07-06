@@ -2,6 +2,7 @@ package com.projectx.board.service;
 
 import com.projectx.board.dto.BoardDTO;
 import com.projectx.board.dto.BoardItemDTO;
+import com.projectx.board.entity.BaseEntity;
 import com.projectx.board.entity.BoardEntity;
 import com.projectx.board.entity.BoardFileEntity;
 import com.projectx.board.entity.UserEntity;
@@ -142,6 +143,15 @@ public class BoardService {
     @Transactional(readOnly = true)
     public Page<BoardItemDTO> getBoardItemPage(Pageable pageable) {
         return boardRepository.getBoardItemPage(pageable);
+    }
+
+    public List<BoardItemDTO> findUserBoard(String userId){
+        List<BoardEntity> boardEntityList = boardRepository.findByBoardWriter(userId);
+        List<BoardItemDTO> boardItemList = new ArrayList<>();
+        for (BoardEntity boardEntity : boardEntityList) {
+            boardItemList.add(BoardItemDTO.toBoardItemDTO(boardEntity));
+        } // entity객체를 DTO로 변환을 하고 list에 담는 작업
+        return boardItemList;
     }
 }
 

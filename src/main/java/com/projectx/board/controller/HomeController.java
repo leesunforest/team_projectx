@@ -14,4 +14,7 @@ public class HomeController {
 //    public String boardList() {
 //        return "boardList";
 //    }
+
+    @GetMapping("/mypage")
+    public String mypage(){ return "mypage"; }
 }
