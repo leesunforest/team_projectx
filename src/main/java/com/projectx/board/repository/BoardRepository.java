@@ -8,10 +8,15 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface BoardRepository extends JpaRepository<BoardEntity, Long>, QuerydslPredicateExecutor<BoardEntity>, BoardRepositoryCustom {
     // update board_table set board_hits=board_hits+1 where id=?
     // 해당 게시글에 조회수 +1
     @Modifying
     @Query(value = "update BoardEntity b set b.boardHits=b.boardHits+1 where b.id=:id")
     void updateHits(@Param("id") Long id);
+
+    List<BoardEntity> findByBoardWriter(String boardWriter);
 }

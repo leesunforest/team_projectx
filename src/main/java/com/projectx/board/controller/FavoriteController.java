@@ -64,6 +64,12 @@ public class FavoriteController {
         return ResponseEntity.ok(responseDTO);
     }
 
+    @GetMapping("/mypage/favorites/list")
+    public String showFavoriteList(Model model, @RequestParam Long userNo) {
+        List<Favorite> favorites = favoriteService.getFavorites(userNo);
+        model.addAttribute("favorites", favorites);
+        return "favoriteList";
+    }
 
     // 특정 사용자의 저장 목록 조회 요청 메서드
     @GetMapping("/list/{userNo}")

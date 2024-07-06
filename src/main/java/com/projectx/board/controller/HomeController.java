@@ -10,8 +10,15 @@ public class HomeController {
         return "home";
     }
 
+//    @GetMapping("/board/list")
+//    public String boardList() {
+//        return "boardList";
+//    }
     @GetMapping("/map")
     public String map() {
         return "map";
     }
+
+    @GetMapping("/mypage")
+    public String mypage(){ return "mypage"; }
 }
