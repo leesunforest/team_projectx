@@ -9,9 +9,4 @@ public class HomeController {
     public String home() {
         return "home";
     }
-
-    @GetMapping("/board/list")
-    public String boardList() {
-        return "boardList";
-    }
 }
