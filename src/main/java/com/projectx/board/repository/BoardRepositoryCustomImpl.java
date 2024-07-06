@@ -44,4 +44,37 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
         long total = results.getTotal();
         return new PageImpl<>(content, pageable, total);
     }
+
+//    private BooleanExpression boardCityOrTitleLike(String searchQuery) {
+//        if (StringUtils.isEmpty(searchQuery) || searchQuery == null) {
+//            return null;
+//        }
+//
+//        BooleanExpression cityContains = QBoardEntity.boardEntity.city.like("%" + searchQuery + "%");
+//        BooleanExpression titleContains = QBoardEntity.boardEntity.boardTitle.like("%" + searchQuery + "%");
+//
+//        return cityContains.or(titleContains);
+//    }
+//
+//    @Override
+//    public Page<BoardItemDTO> getBoardItemPage(String searchQuery, Pageable pageable) {
+//        QBoardEntity board = QBoardEntity.boardEntity;
+//
+//        QueryResults<BoardItemDTO> results = queryFactory
+//                .select(
+//                        new QBoardItemDTO(
+//                                board.id,
+//                                board.boardTitle)
+//                )
+//                .from(board)
+//                .where(boardCityOrTitleLike(searchQuery))
+//                .orderBy(board.id.desc())
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetchResults();
+//
+//        List<BoardItemDTO> content = results.getResults();
+//        long total = results.getTotal();
+//        return new PageImpl<>(content, pageable, total);
+//    }
 }
