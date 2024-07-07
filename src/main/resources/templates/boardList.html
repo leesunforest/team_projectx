@@ -61,7 +61,8 @@
                     </a>
                 </li>
             </ul>
-            <a href="/board/save" class="write-button">글 작성</a>
+            <a th:if="${session.userId}" href="/board/save" class="write-button">글 작성</a>
+            <a th:if="${session.userId == null}" href="/login" class="write-button">글 작성</a>
         </div>
     </main>
 </div>
