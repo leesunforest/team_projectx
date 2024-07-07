@@ -3,6 +3,7 @@ package com.projectx.board.service;
 import com.projectx.board.entity.Favorite;
 import com.projectx.board.entity.UserEntity;
 import com.projectx.board.repository.FavoriteRepository;
+import com.projectx.board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,8 @@ import java.util.List;
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
+
+    private final UserRepository userRepository;
     private final UserService userService;
 
     // 가게 정보를 저장하는 메서드
@@ -38,9 +41,20 @@ public class FavoriteService {
     }
 
     // 사용자의 저장 목록 조회 메서드
+/*
     public List<Favorite> getFavorites(Long userNo) {
         // userNo 로 사용자 구별
-        return favoriteRepository.findByUserUserNo(userNo);
+        //return favoriteRepository.findByUserUserNo(userNo);
+        UserEntity user = userRepository.findById(userNo).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+        return favoriteRepository.findByUser(user);
+    }
+ */
+    public List<Favorite> getFavoritesByUserId(String userId) {
+        UserEntity user = userService.findUserByUserId(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("유효하지 않은 사용자 ID 입니다 : " + userId);
+        }
+        return favoriteRepository.findByUser(user);
     }
 
     // 저장한 정보 상세 보기 메서드
