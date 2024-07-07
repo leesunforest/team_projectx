@@ -53,8 +53,8 @@
     </div>
     <div class="boardFooter">
         <button onclick="listReq()">목록</button>
-        <button onclick="updateReq()">수정</button>
-        <button onclick="deleteReq()">삭제</button>
+        <button th:if="${session.userId == board.boardWriter}" onclick="updateReq()">수정</button>
+        <button th:if="${session.userId == board.boardWriter}" onclick="deleteReq()">삭제</button>
     </div>
 </div>
 <footer>
