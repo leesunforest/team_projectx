@@ -41,13 +41,6 @@ public class UserService {
         return loginUser.getUserId();
     }
 
-    public void logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-    }
-
     // userNo 값을 받아오기 위한 사용자 찾는 메서드
     public UserEntity findUserByUserId(String userId) {
         return userRepository.findByUserId(userId);
