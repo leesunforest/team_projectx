@@ -9,12 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service @RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-
-    private final UserRepository userRepository;
     private final UserService userService;
 
     // 가게 정보를 저장하는 메서드

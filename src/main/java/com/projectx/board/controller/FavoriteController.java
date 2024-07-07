@@ -22,7 +22,6 @@ public class FavoriteController {
 
     private final FavoriteService favoriteService;
 
-    // userId 를 세션에서 받아 오는 경우 :
     @PostMapping("/save")
     public ResponseEntity<?> saveFavorite(@RequestBody FavoriteRequestDTO favoriteDTO, HttpSession httpSession) {
         Object userId = httpSession.getAttribute("userId");
@@ -38,7 +37,6 @@ public class FavoriteController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    // userId 세션을 받아오는 경우
     @GetMapping("/list")
     public String getFavorites(HttpSession session, Model model) {
         // 세션에서 userId 가져오기
