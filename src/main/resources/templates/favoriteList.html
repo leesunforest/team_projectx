@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>찜목록</title>
+    <title>저장한 가게 목록</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/favoriteStyle.css">
     <link rel="stylesheet" href="/css/navigation.css">
@@ -20,7 +20,7 @@
     </div>
 </header>
 <div class="container">
-    <h1>찜목록</h1>
+    <h1>저장한 가게 목록</h1>
     <ul class="list-group">
         <!-- favorites를 순회하며 찜목록을 표시 -->
         <th:block th:each="favorite : ${favorites}">

@@ -41,26 +41,12 @@ public class FavoriteService {
     }
 
     // 사용자의 저장 목록 조회 메서드
-/*
-    public List<Favorite> getFavorites(Long userNo) {
-        // userNo 로 사용자 구별
-        //return favoriteRepository.findByUserUserNo(userNo);
-        UserEntity user = userRepository.findById(userNo).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-        return favoriteRepository.findByUser(user);
-    }
- */
     public List<Favorite> getFavoritesByUserId(String userId) {
         UserEntity user = userService.findUserByUserId(userId);
         if (user == null) {
             throw new IllegalArgumentException("유효하지 않은 사용자 ID 입니다 : " + userId);
         }
         return favoriteRepository.findByUser(user);
-    }
-
-    // 저장한 정보 상세 보기 메서드
-    public Favorite getFavoriteDetails(Long favoriteId) {
-        // favoriteId 를 이용하여 상세보기
-        return favoriteRepository.findById(favoriteId).orElseThrow(() -> new IllegalArgumentException("Favorite not found"));
     }
 
     // 저장한 정보 삭제 메서드

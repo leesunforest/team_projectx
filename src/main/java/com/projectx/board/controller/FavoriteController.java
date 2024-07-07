@@ -4,7 +4,6 @@ import com.projectx.board.dto.FavoriteRequestDTO;
 import com.projectx.board.dto.FavoriteResponseDTO;
 import com.projectx.board.entity.Favorite;
 import com.projectx.board.service.FavoriteService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,14 +54,6 @@ public class FavoriteController {
         model.addAttribute("userId", userId); 
         
         return "favoriteList"; // favoriteList.html 이동
-    }
-
-    // 저장한 정보 상세 보기 요청 메서드
-    @GetMapping("/details/{favoriteId}")
-    public FavoriteResponseDTO getFavoriteDetails(@PathVariable Long favoriteId) {
-        Favorite favorite = favoriteService.getFavoriteDetails(favoriteId);
-
-        return new FavoriteResponseDTO(favorite);
     }
 
     // 저장한 정보 삭제 요청 메서드

@@ -11,11 +11,6 @@
         document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey='+ KAKAO_MAPS_API_KEY + '&libraries=services"><\/script>');
     </script>
 
-    <script th:inline="javascript">
-        const userId = /*[[${userId}]]*/ null; // userId 값이 null일 경우에 대비하여 null 처리
-        console.log("userId", userId);
-    </script>
-
     <script defer src="/js/map-utils.js"></script>
     <script defer src="/js/init.js"></script>
     <script defer src="/js/map.js"></script>
@@ -42,7 +37,6 @@
 <main class="fullscreen">
     <div id="map">
         <div id="top-left-buttons">
-<!--            <button id="myPageButton" onclick="location.href='/mypage'">마이페이지</button>-->
             <button id="groupButton">그룹 참여</button>
         </div>
     </div>
