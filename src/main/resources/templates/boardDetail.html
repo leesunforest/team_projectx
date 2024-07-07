@@ -7,7 +7,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="/css/boardDetail.css">
     <link rel="stylesheet" href="/css/navigation.css">
-
 </head>
 <body>
 <header>
@@ -43,25 +42,22 @@
             <button class="comment_submit" th:onclick="'commentWrite()'" id="commentSubmitButton">게시</button>
         </div>
         <div id="comment-list">
-            <!-- 댓글이 있을 경우에는 th:each를 통해 댓글 리스트를 출력 -->
             <div th:if="${not commentList.empty}" th:each="comment: ${commentList}" class="comment-item">
-                <p th:text="${comment.commentWriter}">댓글 작성자</p>
-                <p th:text="${comment.commentContents}">댓글 내용</p>
-                <p th:text="${comment.commentCreatedTime}">댓글 작성 시간</p>
+                <p th:text="${comment.commentWriter + ' | ' + comment.commentContents}"></p>
+                <p class="comment-time" th:text="${comment.formattedCommentCreatedTime}"></p>
             </div>
         </div>
     </div>
     <div class="boardFooter">
         <button onclick="listReq()">목록</button>
-        <button onclick="updateReq()">수정</button>
-        <button onclick="deleteReq()">삭제</button>
+        <button th:if="${session.userId == board.boardWriter}" onclick="updateReq()">수정</button>
+        <button th:if="${session.userId == board.boardWriter}" onclick="deleteReq()">삭제</button>
     </div>
 </div>
 <footer>
     <p>© PROJECT-X JAVA TEAM 3</p>
 </footer>
 <script th:inline="javascript">
-
     const commentWrite = () => {
         const contents = document.getElementById("commentContents").value;
         console.log("내용: ", contents);
@@ -79,15 +75,27 @@
 
                 let newCommentsHTML = '';
 
-                // 각 댓글 데이터를 HTML로 변환하여 추가
+                // 날짜를 원하는 형식으로 변환하는 함수
+                const formatDate = (dateString) => {
+                    const date = new Date(dateString);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+                    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                };
+
+                // 각 댓글 데이터를 한 줄에 출력하도록 HTML로 변환하여 추가
                 comments.forEach(function(comment) {
+                    const formattedTime = formatDate(comment.commentCreatedTime);
                     newCommentsHTML += `
-                    <div class="comment-item">
-                        <p>${comment.commentWriter}</p>
-                        <p>${comment.commentContents}</p>
-                        <p>${comment.commentCreatedTime}</p>
-                    </div>
-                `;
+                        <div class="comment-item">
+                            <p>${comment.commentWriter} | ${comment.commentContents}</p>
+                            <p class="comment-time">${formattedTime}</p>
+                        </div>
+                    `;
                 });
 
                 const commentList = document.getElementById('comment-list');
@@ -97,7 +105,7 @@
                     console.error("#comment-list 요소를 찾을 수 없습니다.");
                 }
 
-                //댓글 입력 필드 초기화
+                // 댓글 입력 필드 초기화
                 document.getElementById('commentContents').value = '';
             },
             error: function (err) {
