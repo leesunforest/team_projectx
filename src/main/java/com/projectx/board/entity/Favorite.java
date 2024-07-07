@@ -1,5 +1,6 @@
 package com.projectx.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity @Getter @Table(name = "Favorite")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,13 +32,14 @@ public class Favorite {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_no", nullable = false)
-    private User user; // 사용자 고유 번호
+    @JsonIgnore
+    private UserEntity user; // 사용자 고유 번호
 
     @Column(name = "user_id", nullable = false, length = 15)
     private String userId; // 사용자 ID
 
     @Builder
-    public Favorite(String storeName, String storeAddress, String storeNumber, User user, String userId) {
+    public Favorite(String storeName, String storeAddress, String storeNumber, UserEntity user, String userId) {
         this.storeName = storeName;
         this.storeAddress = storeAddress;
         this.storeNumber = storeNumber;
@@ -45,8 +48,8 @@ public class Favorite {
         this.favoriteAt = LocalDateTime.now();
     }
 
-    @PrePersist
-    protected void onCreate() {
-        this.favoriteAt = LocalDateTime.now();
+    public String getFormattedFavoriteAt() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return favoriteAt.format(formatter);
     }
 }

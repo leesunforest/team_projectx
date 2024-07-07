@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 작성</title>
+    <link rel="stylesheet" href="/css/boardSave.css">
+</head>
+<body>
+<div class="container">
+    <form action="/board/save" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <input type="hidden" id="boardWriter" th:value="${user_id}">
+        </div>
+        <div class="form-group">
+            <input type="password" name="boardPass" placeholder="비밀번호" required>
+        </div>
+        <div class="form-group">
+            <input type="text" name="boardTitle" placeholder="제목" required>
+        </div>
+        <div class="form-group">
+            <textarea name="boardContents" placeholder="내용" required></textarea>
+        </div>
+        <div class="form-group">
+            <input type="file" name="boardFile">
+        </div>
+        <button type="submit">글작성</button>
+    </form>
+</div>
+</body>
+</html>

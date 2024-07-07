@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/login.css">
+    <script>
+        // URL 파라미터 확인 및 에러 메시지 표시
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('error')) {
+                alert('회원정보가 올바르지 않습니다');
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h2>로그인</h2>
+    <form action="/login" method="post">
+        <div class="form-group">
+            <input type="text" id="userId" name="userId" placeholder="아이디" required>
+        </div>
+        <div class="form-group">
+            <input type="password" id="userPw" name="userPw" placeholder="비밀번호" required>
+        </div>
+        <button type="submit">로그인</button>
+    </form>
+    <div class="links">
+        <p>계정이 없으신가요? <a href="/signup">회원가입</a></p>
+    </div>
+</div>
+</body>
+</html>

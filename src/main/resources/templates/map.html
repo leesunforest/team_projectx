@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>지도 메인 페이지</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/mapStyles.css">
+    <link rel="stylesheet" href="/css/navigation.css">
     <script src="/js/apikey.js"></script>
     <script>
         document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey='+ KAKAO_MAPS_API_KEY + '&libraries=services"><\/script>');
     </script>
+
     <script defer src="/js/map-utils.js"></script>
     <script defer src="/js/init.js"></script>
     <script defer src="/js/map.js"></script>
@@ -19,19 +21,19 @@
     <script defer src="/js/filter.js"></script>
     <script defer src="/js/search.js"></script>
     <script defer src="/js/category.js"></script>
+
 </head>
 <body>
 <header>
-    <header>
-        <div class="top-bar">
-            <button onclick="location.href='/favorites'">마이페이지</button>
-            <button onclick="location.href='../../board/html/board.html'">게시판</button>
-            <button onclick="location.href='../../member_management/html/register.html'">회원가입</button>
-        </div>
-    </header>
-
+    <h1><a href="/">중간에서 만나</a></h1>
+    <div class="buttons">
+        <span th:if="${session.userId}"><b th:text="${session.userId}"></b>님</span>
+        <a th:if="${session.userId}" href="/mypage">마이페이지</a>
+        <a th:if="${session.userId}" href="/logout">로그아웃</a>
+        <a th:if="${session.userId == null}" href="/login">로그인</a>
     </div>
 </header>
+<input type="hidden" id="userId" th:value="${session.userId}">
 <main class="fullscreen">
     <div id="map">
         <div id="top-left-buttons">
@@ -81,7 +83,6 @@
         <button id="current-location-button" onclick="useCurrentLocation()">현재 위치 사용</button>
     </div>
 </div>
-
 
 <script>
     function findMidpoint() {

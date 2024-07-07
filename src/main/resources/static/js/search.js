@@ -176,7 +176,3 @@ function searchAndDisplayPlaces() {
         searchAndRecommendPlaces(userLocation);
     }
 }
-
-
-
-
