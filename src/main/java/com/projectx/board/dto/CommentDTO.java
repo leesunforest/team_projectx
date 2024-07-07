@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
@@ -16,6 +17,12 @@ public class CommentDTO {
     private String commentContents;
     private Long boardId;
     private LocalDateTime commentCreatedTime;
+
+    // 시간 형식화 메서드
+    public String getFormattedCommentCreatedTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return commentCreatedTime.format(formatter);
+    }
 
     public static CommentDTO toCommentDTO(CommentEntity commentEntity, Long boardId) {
         CommentDTO commentDTO = new CommentDTO();

@@ -55,7 +55,7 @@ public class BoardController {
 
     @GetMapping("/list")
     public String findAll(Model model, Optional<Integer> page) {
-        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 6);
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
         Page<BoardItemDTO> boardList = boardService.getBoardItemPage(pageable);
         model.addAttribute("boardList", boardList);
         model.addAttribute("maxPage", 5);

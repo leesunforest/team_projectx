@@ -72,22 +72,34 @@ header h1 a {
     display: inline-block;
 }
 .boardContents {
-    margin-bottom: 20px;
-}
-.boardContents p {
-    white-space: pre-wrap;
+    margin-bottom: 70px; /* 댓글 영역과 게시글 영역 사이에 여백 10px 추가 */
 }
 .comments {
-    margin-top: 30px;
+    margin-top: 10px;
 }
 .comments h3 {
     margin-bottom: 10px;
 }
 .comment-item {
-    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    width: 100%; /* comment-item의 가로폭을 게시글 영역과 일치 */
+    box-sizing: border-box; /* padding과 border를 box 크기에 포함 */
 }
 .comment-item p {
-    margin: 5px 0;
+    margin: 0;
+    padding: 0 10px;
+    flex: 1; /* p 요소를 유연하게 */
+}
+.comment-item .comment-time {
+    text-align: right; /* 댓글 작성시간 오른쪽 정렬 */
+    flex: 0 0 auto; /* 유연하게 늘어나지 않게 고정 */
+    white-space: nowrap; /* 줄바꿈 방지 */
 }
 footer {
     text-align: center;
@@ -113,4 +125,25 @@ footer {
 }
 .boardFooter button:hover {
     background-color: #444444;
+}
+#comment-write {
+    display: flex;
+    margin-bottom: 20px;
+}
+#commentContents {
+    flex: 1;
+    padding: 10px;
+    margin-right: 10px;
+    box-sizing: border-box; /* padding을 box 크기에 포함 */
+}
+.comment_submit {
+    background-color: #000;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.comment_submit:hover {
+    background-color: #444;
 }

@@ -41,24 +41,28 @@
             </table>
         </div>
         <div class="pagination-container" th:with="start=${(boardList.number/maxPage)*maxPage + 1}, end=(${(boardList.totalPages == 0) ? 1 : (start + (maxPage - 1) < boardList.totalPages ? start + (maxPage - 1) : boardList.totalPages)})">
-            <ul class="pagination" >
+            <ul class="pagination">
+                <!-- Previous button -->
                 <li class="page-item" th:classappend="${boardList.number eq 0}?'disabled':''">
-                    <a th:href="@{'/board/list' + '?page=' + ${boardList.number-1}}" aria-label='Previous' class="page-link">
-                        <span aria-hidden='true'>이전</span>
+                    <a th:href="${boardList.number > 0} ? @{'/board/list' + '?page=' + ${boardList.number-1}} : ''" aria-label="Previous" class="page-link">
+                        <span aria-hidden="true">이전</span>
                     </a>
                 </li>
 
+                <!-- Page numbers -->
                 <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${boardList.number eq page-1}?'active':''">
                     <a th:href="@{'/board/list' + '?page=' + ${page-1}}" th:inline="text" class="page-link">[[${page}]]</a>
                 </li>
 
+                <!-- Next button -->
                 <li class="page-item" th:classappend="${boardList.number+1 ge boardList.totalPages}?'disabled':''">
-                    <a th:href="@{'/board/list' + '?page=' + ${boardList.number+1}}" aria-label='Next' class="page-link">
-                        <span aria-hidden='true'>다음</span>
+                    <a th:href="${boardList.number+1 < boardList.totalPages} ? @{'/board/list' + '?page=' + ${boardList.number+1}} : ''" aria-label="Next" class="page-link">
+                        <span aria-hidden="true">다음</span>
                     </a>
                 </li>
             </ul>
             <a th:if="${session.userId}" href="/board/save" class="write-button">글 작성</a>
+            <a th:if="${session.userId == null}" href="/login" class="write-button">글 작성</a>
         </div>
     </main>
 </div>
